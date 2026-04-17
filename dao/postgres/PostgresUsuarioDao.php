@@ -1,11 +1,15 @@
 <?php
-include_once(__DIR__ . '/../dao/UsuarioDao.php');
+include_once(__DIR__ . '/../UsuarioDao.php');
 include_once(__DIR__ . '/../DAO.php');
-include_once(__DIR__ . '/../models/Usuario.php');
+include_once(__DIR__ . '/../../models/Usuario.php');
 
 class PostgresUsuarioDao extends DAO implements UsuarioDao {
 
     private $table_name = 'usuario';
+
+    public function __construct($conn) {
+        parent::__construct($conn);
+    }
 
     public function insere($usuario) {
         $query = "INSERT INTO " . $this->table_name . " 
@@ -19,8 +23,10 @@ class PostgresUsuarioDao extends DAO implements UsuarioDao {
 
         if($stmt->execute()) {
             return $this->conn->lastInsertId(); 
+        } else {
+            $errorInfo = $stmt->errorInfo();
+            throw new Exception("Erro ao inserir usuário: " . $errorInfo[2]);
         }
-        return -1;
     }
 
     public function remove($usuario) {

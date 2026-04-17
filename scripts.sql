@@ -21,6 +21,7 @@ CREATE TABLE fornecedor (
     nome VARCHAR(150) NOT NULL,
     descricao TEXT,
     telefone VARCHAR(20),
+    cnpj VARCHAR(20),
     usuario_id INT NOT NULL,
     endereco_id INT NOT NULL,
     CONSTRAINT fk_forn_usuario FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE,

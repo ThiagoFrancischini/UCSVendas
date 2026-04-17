@@ -20,7 +20,7 @@ if (session_status() == PHP_SESSION_NONE) {
                     <a href="../dashboard/index.php">Meu Painel</a>
                     <a href="../../api/processa_logout.php">Sair</a>
                 <?php else: ?>
-                    <a href="../auth/registro.php">Criar conta</a>
+                    <a href="../auth/registro_fornecedor.php">Venda na UCS Vendas</a> <a href="../auth/registro.php">Criar conta</a>
                     <a href="../auth/login.php">Entrar</a>
                 <?php endif; ?>
             </nav>

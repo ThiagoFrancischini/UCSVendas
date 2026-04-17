@@ -1,11 +1,15 @@
 <?php
-include_once(__DIR__ . '/../dao/EnderecoDao.php');
+include_once(__DIR__ . '/../EnderecoDao.php');
 include_once(__DIR__ . '/../DAO.php');
-include_once(__DIR__ . '/../models/Endereco.php');
+include_once(__DIR__ . '/../../models/Endereco.php');
 
 class PostgresEnderecoDao extends DAO implements EnderecoDao {
 
     private $table_name = 'endereco';
+
+    public function __construct($conn) {
+        parent::__construct($conn);
+    }
 
     public function insere($endereco) {
         $query = "INSERT INTO " . $this->table_name . " 
@@ -24,25 +28,10 @@ class PostgresEnderecoDao extends DAO implements EnderecoDao {
 
         if($stmt->execute()) {
             return $this->conn->lastInsertId();
+        } else {
+            $errorInfo = $stmt->errorInfo();
+            throw new Exception("Erro ao inserir endereço: " . $errorInfo[2]);
         }
-        return -1;
-    }
-
-    public function remove($endereco) {
-        $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindValue(':id', $endereco->getId());
-
-        if($stmt->execute()) {
-            return true;
-        }    
-        return false;
-    }
-
-    public function altera($endereco) {
-        $query = "UPDATE " . $this->table_name . " 
-                  SET rua = :rua, numero = :numero, complemento = :complemento, 
-                      bairro = :bairro, cep = :cep, cidade = :cidade, estado = :estado 
                   WHERE id = :id";
 
         $stmt = $this->conn->prepare($query);

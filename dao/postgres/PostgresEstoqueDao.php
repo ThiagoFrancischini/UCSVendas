@@ -1,11 +1,15 @@
 <?php
-include_once(__DIR__ . '/../dao/EstoqueDao.php');
+include_once(__DIR__ . '/../EstoqueDao.php');
 include_once(__DIR__ . '/../DAO.php');
-include_once(__DIR__ . '/../models/Estoque.php');
+// include_once(__DIR__ . '/../../models/Estoque.php'); // Modelo não existe
 
 class PostgresEstoqueDao extends DAO implements EstoqueDao {
 
     private $table_name = 'estoque';
+
+    public function __construct($conn) {
+        parent::__construct($conn);
+    }
 
     public function insere($estoque) {
         $query = "INSERT INTO " . $this->table_name . " 

@@ -1,11 +1,15 @@
 <?php
-include_once(__DIR__ . '/../dao/ProdutoDao.php');
+include_once(__DIR__ . '/../ProdutoDao.php');
 include_once(__DIR__ . '/../DAO.php');
-include_once(__DIR__ . '/../models/Produto.php');
+include_once(__DIR__ . '/../../models/Produto.php');
 
 class PostgresProdutoDao extends DAO implements ProdutoDao {
 
     private $table_name = 'produto';
+
+    public function __construct($conn) {
+        parent::__construct($conn);
+    }
 
     public function insere($produto) {
         $query = "INSERT INTO " . $this->table_name . " 
