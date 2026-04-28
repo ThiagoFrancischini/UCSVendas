@@ -1,4 +1,9 @@
-<?php include_once '../layouts/header.php'; ?>
+<?php
+if (!defined('BASE_URL')) {
+    require_once(__DIR__ . '/../../config.php');
+}
+include_once '../layouts/header.php';
+?>
 
 <main>
     <h1>Login</h1>
@@ -22,4 +27,4 @@
 
 <?php include_once '../layouts/footer.php'; ?>
 
-<script src="../../assets/js/auth/login.js"></script>
+<script src="<?php echo BASE_URL; ?>/assets/js/auth/login.js"></script>

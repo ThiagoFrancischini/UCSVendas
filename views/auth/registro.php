@@ -1,4 +1,9 @@
-<?php include_once '../layouts/header.php'; ?>
+<?php
+if (!defined('BASE_URL')) {
+    require_once(__DIR__ . '/../../config.php');
+}
+include_once '../layouts/header.php';
+?>
 
 <main>
     <h1>Criar Conta</h1>

@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['perfil'] === 'FORNECEDOR
         'nome' => $_POST['nome'] ?? '',
         'descricao' => $_POST['descricao'] ?? '',
         'foto' => $_POST['foto'] ?? '',
-        'fornecedor_id' => $_SESSION['usuario_id'] 
+        'fornecedor_id' => $_SESSION['fornecedor_id'] 
     ];
 
     $dadosEstoque = [

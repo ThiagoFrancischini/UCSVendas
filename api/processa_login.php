@@ -16,7 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $logado = $controller->login($email, $senha);
 
     if ($logado) {
-        echo json_encode(['sucesso' => true]);
+        $dados = $controller->buscarDadosLogin($email);
+        echo json_encode([
+            'sucesso' => true,
+            'perfil' => $dados['perfil'],
+            'nome' => $dados['nome'],
+            'usuario_id' => $dados['usuario_id']
+        ]);
     } else {
         echo json_encode(['sucesso' => false, 'mensagem' => 'E-mail ou senha incorretos.']);
     }

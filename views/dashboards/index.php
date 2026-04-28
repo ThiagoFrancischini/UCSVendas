@@ -1,41 +1,62 @@
+<?php
+if (!defined('BASE_URL')) {
+    require_once(__DIR__ . '/../../config.php');
+}
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'FORNECEDOR') {
+    header('Location: ' . BASE_URL . '/views/store/index.php');
+    exit;
+}
+?>
 <?php include_once '../layouts/header.php'; ?>
 
 <main>
-    <?php if ($_SESSION['perfil'] === 'FORNECEDOR'): ?>
-        <h1>Painel do Fornecedor</h1>
-        <section id="cadastro-produto">
-            <h3>Cadastrar Novo Produto</h3>
-            <div id="mensagem-produto"></div>
-            
-            <form id="form-produto">
-                <div class="form-group">
-                    <label>Nome do Produto:</label>
-                    <input type="text" name="nome" required>
-                </div>
-                <div class="form-group">
-                    <label>Descrição:</label>
-                    <textarea name="descricao" rows="3" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Preço (R$):</label>
-                    <input type="number" name="preco" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label>Quantidade em Estoque:</label>
-                    <input type="number" name="quantidade" required>
-                </div>
-                <div class="form-group">
-                    <label>URL da Foto:</label>
-                    <input type="text" name="foto">
-                </div>
-                <button type="submit">Publicar Produto</button>
-            </form>
-        </section>
-    <?php else: ?>
-        <h1>Minhas Compras</h1>
-        <p>Bem-vindo! Aqui você verá seus pedidos em breve.</p>
-    <?php endif; ?>
+    <h1>Painel do Fornecedor</h1>
+    
+    <div class="dashboard-cards">
+        <a href="produtos/index.php" class="dashboard-card">
+            <h3>Meus Produtos</h3>
+            <p>Gerencie seus produtos e estoque</p>
+        </a>
+        
+        <a href="../perfil/index.php" class="dashboard-card">
+            <h3>Perfil</h3>
+            <p>Visualize e edite seus dados</p>
+        </a>
+    </div>
 </main>
 
 <?php include_once '../layouts/footer.php'; ?>
-<script src="../../assets/js/dashboard/index.js"></script>
+
+<style>
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+.dashboard-card {
+    display: block;
+    padding: 30px;
+    background-color: #f9fbfc;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.dashboard-card h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+.dashboard-card p {
+    color: #7f8c8d;
+    margin: 0;
+}
+</style>

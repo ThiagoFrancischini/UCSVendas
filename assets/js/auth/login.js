@@ -18,7 +18,11 @@ $(document).ready(function() {
             },
             success: function(response) {
                 if (response.sucesso) {
-                    window.location.href = '../dashboard/index.php';
+                    if (response.perfil === 'FORNECEDOR') {
+                        window.location.href = '../dashboards/index.php';
+                    } else {
+                        window.location.href = '../store/index.php';
+                    }
                 } else {
                     mensagemDiv.addClass('alert alert-error').text(response.mensagem).show();
                 }

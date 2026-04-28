@@ -19,6 +19,22 @@ class UsuarioController {
             }
             $_SESSION['usuario_id'] = $usuario->getId();
             $_SESSION['perfil'] = $usuario->getPerfil();
+
+            $factory = new PostgresDaoFactory();
+            if ($usuario->getPerfil() === 'FORNECEDOR') {
+                $fornecedorDao = $factory->getFornecedorDao();
+                $fornecedor = $fornecedorDao->buscaPorUsuarioId($usuario->getId());
+                if ($fornecedor) {
+                    $_SESSION['fornecedor_id'] = $fornecedor->getId();
+                }
+            } elseif ($usuario->getPerfil() === 'CLIENTE') {
+                $clienteDao = $factory->getClienteDao();
+                $cliente = $clienteDao->buscaPorUsuarioId($usuario->getId());
+                if ($cliente) {
+                    $_SESSION['cliente_id'] = $cliente->getId();
+                }
+            }
+
             return true;
         }
         return false;
@@ -30,6 +46,34 @@ class UsuarioController {
         }
         session_unset();
         session_destroy();
+    }
+
+    public function buscarDadosLogin($email) {
+        $usuario = $this->usuarioDao->buscaPorEmail($email);
+        $nome = $email;
+
+        if ($usuario) {
+            $factory = new PostgresDaoFactory();
+            if ($usuario->getPerfil() === 'FORNECEDOR') {
+                $fornecedorDao = $factory->getFornecedorDao();
+                $fornecedor = $fornecedorDao->buscaPorUsuarioId($usuario->getId());
+                if ($fornecedor) {
+                    $nome = $fornecedor->getNome();
+                }
+            } else {
+                $clienteDao = $factory->getClienteDao();
+                $cliente = $clienteDao->buscaPorUsuarioId($usuario->getId());
+                if ($cliente) {
+                    $nome = $cliente->getNome();
+                }
+            }
+        }
+
+        return [
+            'usuario_id' => $usuario->getId(),
+            'perfil' => $usuario->getPerfil(),
+            'nome' => $nome
+        ];
     }
 }
 ?>

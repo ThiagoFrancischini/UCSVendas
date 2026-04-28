@@ -1,4 +1,7 @@
 <?php
+if (!defined('BASE_URL')) {
+    require_once(__DIR__ . '/../../config.php');
+}
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -9,24 +12,32 @@ if (session_status() == PHP_SESSION_NONE) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UCS Vendas</title>
-    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/style.css">
 </head>
 <body>
     <header>
         <div class="header-container">
-            <a href="../../index.php" class="logo">UCS Vendas</a>
+            <a href="<?php echo BASE_URL; ?>/index.php" class="logo">UCS Vendas</a>
             <nav class="nav-links">
                 <?php if (isset($_SESSION['perfil'])): ?>
                     <?php if ($_SESSION['perfil'] === 'FORNECEDOR'): ?>
-                        <a href="../dashboards/index.php">Meu Painel</a>
+                        <a href="<?php echo BASE_URL; ?>/views/dashboards/index.php">Painel</a>
+                        <a href="<?php echo BASE_URL; ?>/views/dashboards/produtos/index.php">Produtos</a>
+                        <div class="dropdown">
+                            <a href="javascript:void(0)" class="dropdown-toggle">Perfil ▾</a>
+                            <div class="dropdown-menu">
+                                <a href="<?php echo BASE_URL; ?>/views/perfil/index.php">Ver Perfil</a>
+                                <a href="<?php echo BASE_URL; ?>/api/processa_logout.php" class="logout-link">Sair</a>
+                            </div>
+                        </div>
                     <?php else: ?>
-                        <a href="../dashboards/index.php">Minhas Compras</a>
+                        <a href="<?php echo BASE_URL; ?>/views/perfil/index.php">Minha Conta</a>
+                        <a href="<?php echo BASE_URL; ?>/api/processa_logout.php">Sair</a>
                     <?php endif; ?>
-                    <a href="../../api/processa_logout.php">Sair</a>
                 <?php else: ?>
-                    <a href="../auth/registro_fornecedor.php">Venda na UCS Vendas</a>
-                    <a href="../auth/registro.php">Criar conta</a>
-                    <a href="../auth/login.php">Entrar</a>
+                    <a href="<?php echo BASE_URL; ?>/views/auth/registro_fornecedor.php">Vender</a>
+                    <a href="<?php echo BASE_URL; ?>/views/auth/registro.php">Criar conta</a>
+                    <a href="<?php echo BASE_URL; ?>/views/auth/login.php" class="btn-login">Entrar</a>
                 <?php endif; ?>
             </nav>
         </div>
