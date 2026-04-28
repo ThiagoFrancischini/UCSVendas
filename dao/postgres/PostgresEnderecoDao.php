@@ -12,8 +12,8 @@ class PostgresEnderecoDao extends DAO implements EnderecoDao {
     }
 
     public function insere($endereco) {
-        $query = "INSERT INTO " . $this->table_name . " 
-                  (rua, numero, complemento, bairro, cep, cidade, estado) 
+        $query = "INSERT INTO " . $this->table_name . "
+                  (rua, numero, complemento, bairro, cep, cidade, estado)
                   VALUES (:rua, :numero, :complemento, :bairro, :cep, :cidade, :estado)";
 
         $stmt = $this->conn->prepare($query);
@@ -32,6 +32,23 @@ class PostgresEnderecoDao extends DAO implements EnderecoDao {
             $errorInfo = $stmt->errorInfo();
             throw new Exception("Erro ao inserir endereço: " . $errorInfo[2]);
         }
+    }
+
+    public function remove($endereco) {
+        $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':id', $endereco->getId());
+
+        if($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function altera($endereco) {
+        $query = "UPDATE " . $this->table_name . "
+                  SET rua = :rua, numero = :numero, complemento = :complemento,
+                      bairro = :bairro, cep = :cep, cidade = :cidade, estado = :estado
                   WHERE id = :id";
 
         $stmt = $this->conn->prepare($query);
@@ -47,7 +64,7 @@ class PostgresEnderecoDao extends DAO implements EnderecoDao {
 
         if($stmt->execute()) {
             return true;
-        }    
+        }
         return false;
     }
 

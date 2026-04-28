@@ -1,7 +1,7 @@
 <?php include_once '../layouts/header.php'; ?>
 
 <main>
-    <?php if ($_SESSION['usuario_tipo'] === 'FORNECEDOR'): ?>
+    <?php if ($_SESSION['perfil'] === 'FORNECEDOR'): ?>
         <h1>Painel do Fornecedor</h1>
         <section id="cadastro-produto">
             <h3>Cadastrar Novo Produto</h3>
@@ -32,8 +32,8 @@
             </form>
         </section>
     <?php else: ?>
-        <h1>Meu Painel</h1>
-        <p>Bem-vindo, <?php echo $_SESSION['usuario_email']; ?>! Aqui você verá seus pedidos em breve.</p>
+        <h1>Minhas Compras</h1>
+        <p>Bem-vindo! Aqui você verá seus pedidos em breve.</p>
     <?php endif; ?>
 </main>
 

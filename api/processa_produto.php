@@ -4,7 +4,7 @@ include_once(__DIR__ . '/../controllers/ProdutoController.php');
 
 if (session_status() == PHP_SESSION_NONE) session_start();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['usuario_tipo'] === 'FORNECEDOR') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['perfil'] === 'FORNECEDOR') {
     
     $dadosProduto = [
         'nome' => $_POST['nome'] ?? '',

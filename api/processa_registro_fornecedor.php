@@ -37,7 +37,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao realizar o cadastro da empresa.']);
         }
     } catch (Exception $e) {
-        echo json_encode(['sucesso' => false, 'mensagem' => 'Erro interno: ' . $e->getMessage()]);
+        $mensagem = $e->getMessage();
+        $campo = null;
+
+        if (strpos($mensagem, 'duplicate key') !== false || strpos($mensagem, 'unique') !== false) {
+            if (strpos($mensagem, 'email') !== false) {
+                $mensagem = 'E-mail já cadastrado.';
+                $campo = 'email';
+            } elseif (strpos($mensagem, 'cnpj') !== false) {
+                $mensagem = 'CNPJ já cadastrado.';
+                $campo = 'cnpj';
+            } else {
+                $mensagem = 'Dados já cadastrados.';
+            }
+        } elseif (strpos($mensagem, 'usuario') !== false) {
+            $campo = 'email';
+        } elseif (strpos($mensagem, 'endereco') !== false) {
+            $campo = 'cep';
+        } elseif (strpos($mensagem, 'fornecedor') !== false) {
+            $campo = 'nome';
+        }
+
+        echo json_encode(['sucesso' => false, 'mensagem' => $mensagem, 'campo' => $campo]);
     }
 } else {
     echo json_encode(['sucesso' => false, 'mensagem' => 'Método inválido.']);

@@ -17,6 +17,10 @@ class FornecedorController {
         $fornecedorDao = $this->factory->getFornecedorDao();
         $conn = $this->factory->getConnection();
 
+        if ($usuarioDao->existePorEmail($dadosUsuario['email'])) {
+            throw new Exception("E-mail já cadastrado no sistema.");
+        }
+
         $conn->beginTransaction();
 
         try {

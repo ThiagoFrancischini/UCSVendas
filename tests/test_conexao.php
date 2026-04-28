@@ -5,8 +5,7 @@ $factory = new PostgresDaoFactory();
 $conn = $factory->getConnection();
 
 if ($conn) {
-    echo "Conexão com PostgreSQL bem-sucedida!";
+    echo "Conexao com PostgreSQL bem-sucedida!\n";
 } else {
-    echo "Falha na conexão com PostgreSQL.";
+    echo "Falha na conexao com PostgreSQL.\n";
 }
-?>

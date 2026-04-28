@@ -25,13 +25,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'complemento' => $_POST['complemento'] ?? ''
     ];
 
-    $controller = new ClienteController();
-    $sucesso = $controller->cadastrar($dadosUsuario, $dadosEndereco, $dadosCliente);
+    try {
+        $controller = new ClienteController();
+        $sucesso = $controller->cadastrar($dadosUsuario, $dadosEndereco, $dadosCliente);
 
-    if ($sucesso) {
-        echo json_encode(['sucesso' => true]);
-    } else {
-        echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao realizar o cadastro.']);
+        if ($sucesso) {
+            echo json_encode(['sucesso' => true]);
+        } else {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao realizar o cadastro.']);
+        }
+    } catch (Exception $e) {
+        $mensagem = $e->getMessage();
+        $campo = null;
+
+        if (strpos($mensagem, 'duplicate key') !== false || strpos($mensagem, 'unique') !== false) {
+            if (strpos($mensagem, 'email') !== false) {
+                $mensagem = 'E-mail já cadastrado.';
+                $campo = 'email';
+            } elseif (strpos($mensagem, 'cartao') !== false) {
+                $mensagem = 'Cartão de crédito já cadastrado.';
+                $campo = 'cartao';
+            } else {
+                $mensagem = 'Dados já cadastrados.';
+            }
+        } elseif (strpos($mensagem, 'usuario') !== false) {
+            $campo = 'email';
+        } elseif (strpos($mensagem, 'endereco') !== false) {
+            $campo = 'cep';
+        } elseif (strpos($mensagem, 'cliente') !== false) {
+            $campo = 'nome';
+        }
+
+        echo json_encode(['sucesso' => false, 'mensagem' => $mensagem, 'campo' => $campo]);
     }
 } else {
     echo json_encode(['sucesso' => false, 'mensagem' => 'Método inválido.']);

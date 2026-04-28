@@ -1,7 +1,7 @@
 <?php
 include_once(__DIR__ . '/../EstoqueDao.php');
 include_once(__DIR__ . '/../DAO.php');
-// include_once(__DIR__ . '/../../models/Estoque.php'); // Modelo não existe
+include_once(__DIR__ . '/../../models/Estoque.php');
 
 class PostgresEstoqueDao extends DAO implements EstoqueDao {
 

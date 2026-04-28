@@ -1,5 +1,5 @@
 <?php
-include_once(__DIR__ . '/controllers/FornecedorController.php');
+include_once(__DIR__ . '/../controllers/FornecedorController.php');
 
 $dadosUsuario = [
     'email' => 'teste@example.com',

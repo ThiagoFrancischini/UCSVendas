@@ -13,15 +13,31 @@ class ProdutoController {
     public function cadastrarProduto($dadosProduto, $dadosEstoque) {
         $produtoDao = $this->factory->getProdutoDao();
         $estoqueDao = $this->factory->getEstoqueDao();
+        $conn = $this->factory->getConnection();
 
-        $produto = new Produto(null, $dadosProduto['nome'], $dadosProduto['descricao'], $dadosProduto['foto'], $dadosProduto['fornecedor_id']);
-        $produtoId = $produtoDao->insere($produto);
+        $conn->beginTransaction();
 
-        if ($produtoId > 0) {
+        try {
+            $produto = new Produto(null, $dadosProduto['nome'], $dadosProduto['descricao'], $dadosProduto['foto'], $dadosProduto['fornecedor_id']);
+            $produtoId = $produtoDao->insere($produto);
+
+            if ($produtoId <= 0) {
+                throw new Exception("Erro ao inserir produto");
+            }
+
             $estoque = new Estoque(null, $dadosEstoque['quantidade'], $dadosEstoque['preco'], $produtoId);
-            return $estoqueDao->insere($estoque) > 0;
+            $estoqueId = $estoqueDao->insere($estoque);
+
+            if ($estoqueId <= 0) {
+                throw new Exception("Erro ao inserir estoque");
+            }
+
+            $conn->commit();
+            return true;
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
         }
-        return false;
     }
 
     public function listarProdutosPorFornecedor($fornecedorId) {

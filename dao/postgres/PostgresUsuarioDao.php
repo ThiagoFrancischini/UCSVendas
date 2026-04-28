@@ -101,5 +101,13 @@ class PostgresUsuarioDao extends DAO implements UsuarioDao {
         }
         return $usuarios;
     }
+
+    public function existePorEmail($email) {
+        $query = "SELECT id FROM " . $this->table_name . " WHERE email = ? LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(1, $email);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC) !== false;
+    }
 }
 ?>

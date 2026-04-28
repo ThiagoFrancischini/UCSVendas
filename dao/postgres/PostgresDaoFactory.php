@@ -10,19 +10,20 @@ include_once(__DIR__ . '/PostgresEstoqueDao.php');
 class PostgresDaoFactory extends DaoFactory {
 
     private $host = "localhost";
-    private $db_name = "ucsvendas";
+    private $db_name = "UCSVendas";
     private $port = "5432";
     private $username = "postgres";
-    private $password = "ucs";
+    private $password = "0501";
     public $conn;
 
     public function getConnection(){
-        $this->conn = null;
-        try{
-            $this->conn = new PDO("pgsql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name, $this->username, $this->password);
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        }catch(PDOException $exception){
-            echo $exception->getMessage();
+        if ($this->conn === null) {
+            try{
+                $this->conn = new PDO("pgsql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name, $this->username, $this->password);
+                $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            }catch(PDOException $exception){
+                echo $exception->getMessage();
+            }
         }
         return $this->conn;
     }

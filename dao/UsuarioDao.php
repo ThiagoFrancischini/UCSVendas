@@ -6,5 +6,6 @@ interface UsuarioDao {
     public function buscaPorId($id);
     public function buscaPorEmail($email);
     public function buscaTodos();
+    public function existePorEmail($email);
 }
 ?>
