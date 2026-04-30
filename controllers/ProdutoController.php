@@ -54,5 +54,66 @@ class ProdutoController {
         $estoqueDao = $this->factory->getEstoqueDao();
         return $estoqueDao->buscaPorProdutoId($produtoId);
     }
+
+    public function editarProduto($produtoId, $dadosProduto, $dadosEstoque) {
+        $produtoDao = $this->factory->getProdutoDao();
+        $estoqueDao = $this->factory->getEstoqueDao();
+        $conn = $this->factory->getConnection();
+
+        $conn->beginTransaction();
+
+        try {
+            $produto = new Produto($produtoId, $dadosProduto['nome'], $dadosProduto['descricao'], $dadosProduto['foto'], $dadosProduto['fornecedor_id']);
+            if (!$produtoDao->altera($produto)) {
+                throw new Exception("Erro ao atualizar produto");
+            }
+
+            $estoque = $estoqueDao->buscaPorProdutoId($produtoId);
+            if ($estoque) {
+                $estoque->setQuantidade($dadosEstoque['quantidade']);
+                $estoque->setPreco($dadosEstoque['preco']);
+                if (!$estoqueDao->altera($estoque)) {
+                    throw new Exception("Erro ao atualizar estoque");
+                }
+            }
+
+            $conn->commit();
+            return true;
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
+
+    public function deletarProduto($produtoId) {
+        $produtoDao = $this->factory->getProdutoDao();
+        $estoqueDao = $this->factory->getEstoqueDao();
+        $conn = $this->factory->getConnection();
+
+        $conn->beginTransaction();
+
+        try {
+            $estoque = $estoqueDao->buscaPorProdutoId($produtoId);
+            if ($estoque) {
+                if (!$estoqueDao->remove($estoque)) {
+                    throw new Exception("Erro ao deletar estoque");
+                }
+            }
+
+            $produto = $produtoDao->buscaPorId($produtoId);
+            if (!$produto) {
+                throw new Exception("Produto não encontrado");
+            }
+
+            if (!$produtoDao->remove($produto)) {
+                throw new Exception("Erro ao deletar produto");
+            }
+
+            $conn->commit();
+            return true;
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
 }
-?>

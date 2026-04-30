@@ -16,6 +16,7 @@ $(document).ready(function() {
         var mensagemDiv = $('#mensagem-produto');
         var botao = form.find('button');
         var textoOriginal = botao.text();
+        var produtoId = $('#produto_id').val();
 
         mensagemDiv.removeClass('alert-error alert-success').hide().text('');
         $('.form-group').removeClass('has-error');
@@ -23,14 +24,18 @@ $(document).ready(function() {
         botao.prop('disabled', true).addClass('btn-loading').text('Salvando...');
         exibirLoading();
 
+        // Definir a URL baseado se é edição ou novo produto
+        var url = produtoId ? '../../../api/processa_produto.php?acao=editar' : '../../../api/processa_produto.php';
+
         $.ajax({
-            url: '../../../api/processa_produto.php',
+            url: url,
             type: 'POST',
             dataType: 'json',
             data: form.serialize(),
             success: function(response) {
                 if (response.sucesso) {
-                    mensagemDiv.addClass('alert alert-success').text('Produto cadastrado com sucesso!').show();
+                    var mensagem = produtoId ? 'Produto atualizado com sucesso!' : 'Produto cadastrado com sucesso!';
+                    mensagemDiv.addClass('alert alert-success').text(mensagem).show();
                     setTimeout(function() {
                         window.location.href = 'index.php';
                     }, 1500);

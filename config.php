@@ -1,2 +1,2 @@
 <?php
-define('BASE_URL', '/UCSVendas/UCSVendas');
+define('BASE_URL', '/UCSVendas');

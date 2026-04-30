@@ -10,10 +10,10 @@ include_once(__DIR__ . '/PostgresEstoqueDao.php');
 class PostgresDaoFactory extends DaoFactory {
 
     private $host = "localhost";
-    private $db_name = "UCSVendas";
+    private $db_name = "ucsvendas";
     private $port = "5432";
     private $username = "postgres";
-    private $password = "0501";
+    private $password = "ucs";
     public $conn;
 
     public function getConnection(){
