@@ -75,5 +75,50 @@ class UsuarioController {
             'nome' => $nome
         ];
     }
+
+    public function editarFornecedor($usuarioId, $dadosFornecedor, $dadosEndereco) {
+        $factory = new PostgresDaoFactory();
+        $fornecedorDao = $factory->getFornecedorDao();
+        $enderecoDao = $factory->getEnderecoDao();
+        $conn = $factory->getConnection();
+
+        $conn->beginTransaction();
+
+        try {
+            $fornecedor = $fornecedorDao->buscaPorUsuarioId($usuarioId);
+            if (!$fornecedor) {
+                throw new Exception("Fornecedor não encontrado");
+            }
+
+            $endereco = $enderecoDao->buscaPorId($fornecedor->getEnderecoId());
+            if ($endereco) {
+                $endereco->setRua($dadosEndereco['rua']);
+                $endereco->setNumero($dadosEndereco['numero']);
+                $endereco->setComplemento($dadosEndereco['complemento']);
+                $endereco->setBairro($dadosEndereco['bairro']);
+                $endereco->setCidade($dadosEndereco['cidade']);
+                $endereco->setEstado($dadosEndereco['estado']);
+                $endereco->setCep($dadosEndereco['cep']);
+
+                if (!$enderecoDao->altera($endereco)) {
+                    throw new Exception("Erro ao atualizar endereço");
+                }
+            }
+
+            $fornecedor->setNome($dadosFornecedor['nome']);
+            $fornecedor->setTelefone($dadosFornecedor['telefone']);
+            $fornecedor->setCnpj($dadosFornecedor['cnpj']);
+
+            if (!$fornecedorDao->altera($fornecedor)) {
+                throw new Exception("Erro ao atualizar fornecedor");
+            }
+
+            $conn->commit();
+            return true;
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+    }
 }
 ?>

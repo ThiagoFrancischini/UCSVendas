@@ -10,7 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['perfil'] === 'FORNECEDOR
     $acao = $_GET['acao'] ?? 'criar';
     
     if ($acao === 'editar') {
-        // Lógica de edição
         $produtoId = $_POST['produto_id'] ?? null;
         
         if (!$produtoId) {
@@ -22,14 +21,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['perfil'] === 'FORNECEDOR
         $produtoDao = $factory->getProdutoDao();
         $fornecedorDao = $factory->getFornecedorDao();
 
-        // Verificar se o produto existe
         $produto = $produtoDao->buscaPorId($produtoId);
         if (!$produto) {
             echo json_encode(['sucesso' => false, 'mensagem' => 'Produto não encontrado.']);
             exit;
         }
 
-        // Verificar se o fornecedor é o dono
         $fornecedor = $fornecedorDao->buscaPorUsuarioId($_SESSION['usuario_id']);
         if ($produto->getFornecedorId() != $fornecedor->getId()) {
             echo json_encode(['sucesso' => false, 'mensagem' => 'Você não tem permissão para editar este produto.']);
@@ -60,7 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['perfil'] === 'FORNECEDOR
             echo json_encode(['sucesso' => false, 'mensagem' => $e->getMessage()]);
         }
     } elseif ($acao === 'deletar') {
-        // Lógica de deleção
         $produtoId = $_POST['produto_id'] ?? null;
         
         if (!$produtoId) {
@@ -72,14 +68,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['perfil'] === 'FORNECEDOR
         $produtoDao = $factory->getProdutoDao();
         $fornecedorDao = $factory->getFornecedorDao();
 
-        // Verificar se o produto existe
         $produto = $produtoDao->buscaPorId($produtoId);
         if (!$produto) {
             echo json_encode(['sucesso' => false, 'mensagem' => 'Produto não encontrado.']);
             exit;
         }
 
-        // Verificar se o fornecedor é o dono
         $fornecedor = $fornecedorDao->buscaPorUsuarioId($_SESSION['usuario_id']);
         if ($produto->getFornecedorId() != $fornecedor->getId()) {
             echo json_encode(['sucesso' => false, 'mensagem' => 'Você não tem permissão para deletar este produto.']);
@@ -98,7 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['perfil'] === 'FORNECEDOR
             echo json_encode(['sucesso' => false, 'mensagem' => $e->getMessage()]);
         }
     } else {
-        // Lógica de criação (original)
         $dadosProduto = [
             'nome' => $_POST['nome'] ?? '',
             'descricao' => $_POST['descricao'] ?? '',
