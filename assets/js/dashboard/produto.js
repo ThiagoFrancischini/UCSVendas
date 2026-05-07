@@ -14,7 +14,7 @@ $(document).ready(function() {
 
         var form = $(this);
         var mensagemDiv = $('#mensagem-produto');
-        var botao = form.find('button');
+        var botao = form.find('button[type="submit"]');
         var textoOriginal = botao.text();
         var produtoId = $('#produto_id').val();
 
@@ -52,7 +52,13 @@ $(document).ready(function() {
                 $('html, body').scrollTop(0);
             },
             complete: function() {
-                botao.prop('disabled', false).removeClass('btn-loading').text(textoOriginal);
+                botao.prop('disabled', false).removeClass('btn-loading');
+                // Garantir que o texto volta ao original
+                if (produtoId) {
+                    botao.text('Salvar Alterações');
+                } else {
+                    botao.text('Publicar Produto');
+                }
                 removerLoading();
             }
         });

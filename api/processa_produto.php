@@ -40,14 +40,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['perfil'] === 'FORNECEDOR
             'fornecedor_id' => $fornecedor->getId()
         ];
 
-        $dadosEstoque = [
-            'preco' => $_POST['preco'] ?? 0,
-            'quantidade' => $_POST['quantidade'] ?? 0
-        ];
+        // Processar múltiplos estoques
+        $dadosEstoques = [];
+        if (isset($_POST['estoques']) && is_array($_POST['estoques'])) {
+            foreach ($_POST['estoques'] as $estoqueData) {
+                $dadosEstoques[] = [
+                    'quantidade' => $estoqueData['quantidade'] ?? 0,
+                    'preco' => $estoqueData['preco'] ?? 0,
+                    'preco_custo' => $estoqueData['preco_custo'] ?? null,
+                    'lote' => $estoqueData['lote'] ?? null
+                ];
+            }
+        }
 
         $controller = new ProdutoController();
         try {
-            $sucesso = $controller->editarProduto($produtoId, $dadosProduto, $dadosEstoque);
+            $sucesso = $controller->editarProduto($produtoId, $dadosProduto, $dadosEstoques);
             if ($sucesso) {
                 echo json_encode(['sucesso' => true]);
             } else {
@@ -99,14 +107,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['perfil'] === 'FORNECEDOR
             'fornecedor_id' => $_SESSION['fornecedor_id'] 
         ];
 
-        $dadosEstoque = [
-            'preco' => $_POST['preco'] ?? 0,
-            'quantidade' => $_POST['quantidade'] ?? 0
-        ];
+        // Processar múltiplos estoques
+        $dadosEstoques = [];
+        if (isset($_POST['estoques']) && is_array($_POST['estoques'])) {
+            foreach ($_POST['estoques'] as $estoqueData) {
+                $dadosEstoques[] = [
+                    'quantidade' => $estoqueData['quantidade'] ?? 0,
+                    'preco' => $estoqueData['preco'] ?? 0,
+                    'preco_custo' => $estoqueData['preco_custo'] ?? null,
+                    'lote' => $estoqueData['lote'] ?? null
+                ];
+            }
+        }
 
         $controller = new ProdutoController();
         try {
-            $sucesso = $controller->cadastrarProduto($dadosProduto, $dadosEstoque);
+            $sucesso = $controller->cadastrarProduto($dadosProduto, $dadosEstoques);
 
             if ($sucesso) {
                 echo json_encode(['sucesso' => true]);

@@ -38,7 +38,7 @@ if ($produto->getFornecedorId() != $fornecedor->getId()) {
     exit;
 }
 
-$estoque = $estoqueDao->buscaPorProdutoId($produtoId);
+$estoques = $estoqueDao->buscaPorProdutoId($produtoId);
 ?>
 <?php include_once '../../layouts/header.php'; ?>
 
@@ -61,13 +61,34 @@ $estoque = $estoqueDao->buscaPorProdutoId($produtoId);
         </div>
         
         <div class="form-group">
-            <label for="preco">Preço (R$):</label>
-            <input type="number" id="preco" name="preco" step="0.01" min="0.01" required value="<?php echo htmlspecialchars($estoque->getPreco()); ?>">
-        </div>
-        
-        <div class="form-group">
-            <label for="quantidade">Quantidade em Estoque:</label>
-            <input type="number" id="quantidade" name="quantidade" min="0" required value="<?php echo htmlspecialchars($estoque->getQuantidade()); ?>">
+            <label>Estoques:</label>
+            <div id="estoques-container">
+                <?php foreach ($estoques as $index => $estoque): ?>
+                <div class="estoque-item" data-index="<?php echo $index; ?>">
+                    <h4>Estoque <?php echo $index + 1; ?></h4>
+                    <div class="form-group">
+                        <label for="preco_<?php echo $index; ?>">Preço de Venda (R$):</label>
+                        <input type="number" id="preco_<?php echo $index; ?>" name="estoques[<?php echo $index; ?>][preco]" step="0.01" min="0.01" required value="<?php echo htmlspecialchars($estoque->getPreco()); ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="quantidade_<?php echo $index; ?>">Quantidade:</label>
+                        <input type="number" id="quantidade_<?php echo $index; ?>" name="estoques[<?php echo $index; ?>][quantidade]" min="0" required value="<?php echo htmlspecialchars($estoque->getQuantidade()); ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="preco_custo_<?php echo $index; ?>">Preço de Custo (R$):</label>
+                        <input type="number" id="preco_custo_<?php echo $index; ?>" name="estoques[<?php echo $index; ?>][preco_custo]" step="0.01" min="0" value="<?php echo htmlspecialchars($estoque->getPrecoCusto() ?? ''); ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="lote_<?php echo $index; ?>">Lote:</label>
+                        <input type="text" id="lote_<?php echo $index; ?>" name="estoques[<?php echo $index; ?>][lote]" maxlength="50" value="<?php echo htmlspecialchars($estoque->getLote() ?? ''); ?>">
+                    </div>
+                    <?php if ($index > 0): ?>
+                    <button type="button" class="remove-estoque btn-danger">Remover Estoque</button>
+                    <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <button type="button" id="add-estoque" class="btn-secondary">Adicionar Estoque</button>
         </div>
         
         <div class="form-group">
@@ -85,6 +106,66 @@ $estoque = $estoqueDao->buscaPorProdutoId($produtoId);
 <?php include_once '../../layouts/footer.php'; ?>
 
 <script src="<?php echo BASE_URL; ?>/assets/js/dashboard/produto.js"></script>
+
+<script>
+$(document).ready(function() {
+    let estoqueIndex = <?php echo count($estoques); ?>;
+    
+    function getNextEstoqueIndex() {
+        const existingIndexes = [];
+        $('#estoques-container .estoque-item').each(function() {
+            const index = parseInt($(this).data('index'));
+            existingIndexes.push(index);
+        });
+        // Encontra o menor index não usado começando do 0
+        let nextIndex = 0;
+        while (existingIndexes.includes(nextIndex)) {
+            nextIndex++;
+        }
+        return nextIndex;
+    }
+    
+    function updateEstoqueTitles() {
+        $('#estoques-container .estoque-item').each(function(index) {
+            $(this).find('h4').text('Estoque ' + (index + 1));
+        });
+    }
+    
+    $('#add-estoque').on('click', function() {
+        const container = $('#estoques-container');
+        const nextIndex = getNextEstoqueIndex();
+        const newEstoque = `
+            <div class="estoque-item" data-index="${nextIndex}">
+                <h4>Estoque ${$('#estoques-container .estoque-item').length + 1}</h4>
+                <div class="form-group">
+                    <label for="preco_${nextIndex}">Preço de Venda (R$):</label>
+                    <input type="number" id="preco_${nextIndex}" name="estoques[${nextIndex}][preco]" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="quantidade_${nextIndex}">Quantidade:</label>
+                    <input type="number" id="quantidade_${nextIndex}" name="estoques[${nextIndex}][quantidade]" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="preco_custo_${nextIndex}">Preço de Custo (R$):</label>
+                    <input type="number" id="preco_custo_${nextIndex}" name="estoques[${nextIndex}][preco_custo]" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="lote_${nextIndex}">Lote:</label>
+                    <input type="text" id="lote_${nextIndex}" name="estoques[${nextIndex}][lote]" maxlength="50">
+                </div>
+                <button type="button" class="remove-estoque btn-danger">Remover Estoque</button>
+            </div>
+        `;
+        container.append(newEstoque);
+        updateEstoqueTitles();
+    });
+    
+    $(document).on('click', '.remove-estoque', function() {
+        $(this).closest('.estoque-item').remove();
+        updateEstoqueTitles();
+    });
+});
+</script>
 
 <style>
 .form-actions {
@@ -109,5 +190,47 @@ $estoque = $estoqueDao->buscaPorProdutoId($produtoId);
 .btn-cancel:hover {
     background-color: #7f8c8d;
     color: white;
+}
+
+.estoque-item {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.estoque-item h4 {
+    margin-top: 0;
+    color: #333;
+}
+
+.btn-secondary {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-secondary:hover {
+    background-color: #2980b9;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
 }
 </style>

@@ -10,7 +10,7 @@ class ProdutoController {
         $this->factory = new PostgresDaoFactory();
     }
 
-    public function cadastrarProduto($dadosProduto, $dadosEstoque) {
+    public function cadastrarProduto($dadosProduto, $dadosEstoques) {
         $produtoDao = $this->factory->getProdutoDao();
         $estoqueDao = $this->factory->getEstoqueDao();
         $conn = $this->factory->getConnection();
@@ -25,11 +25,14 @@ class ProdutoController {
                 throw new Exception("Erro ao inserir produto");
             }
 
-            $estoque = new Estoque(null, $dadosEstoque['quantidade'], $dadosEstoque['preco'], $produtoId);
-            $estoqueId = $estoqueDao->insere($estoque);
+            // Inserir múltiplos estoques
+            foreach ($dadosEstoques as $dadosEstoque) {
+                $estoque = new Estoque(null, $dadosEstoque['quantidade'], $dadosEstoque['preco'], $dadosEstoque['preco_custo'] ?? null, $dadosEstoque['lote'] ?? null, $produtoId);
+                $estoqueId = $estoqueDao->insere($estoque);
 
-            if ($estoqueId <= 0) {
-                throw new Exception("Erro ao inserir estoque");
+                if ($estoqueId <= 0) {
+                    throw new Exception("Erro ao inserir estoque");
+                }
             }
 
             $conn->commit();
@@ -50,12 +53,12 @@ class ProdutoController {
         return $produtoDao->buscaTodos();
     }
 
-    public function buscarEstoquePorProduto($produtoId) {
+    public function buscarEstoquesPorProduto($produtoId) {
         $estoqueDao = $this->factory->getEstoqueDao();
         return $estoqueDao->buscaPorProdutoId($produtoId);
     }
 
-    public function editarProduto($produtoId, $dadosProduto, $dadosEstoque) {
+    public function editarProduto($produtoId, $dadosProduto, $dadosEstoques) {
         $produtoDao = $this->factory->getProdutoDao();
         $estoqueDao = $this->factory->getEstoqueDao();
         $conn = $this->factory->getConnection();
@@ -68,12 +71,21 @@ class ProdutoController {
                 throw new Exception("Erro ao atualizar produto");
             }
 
-            $estoque = $estoqueDao->buscaPorProdutoId($produtoId);
-            if ($estoque) {
-                $estoque->setQuantidade($dadosEstoque['quantidade']);
-                $estoque->setPreco($dadosEstoque['preco']);
-                if (!$estoqueDao->altera($estoque)) {
-                    throw new Exception("Erro ao atualizar estoque");
+            // Remover estoques existentes
+            $estoquesExistentes = $estoqueDao->buscaPorProdutoId($produtoId);
+            foreach ($estoquesExistentes as $estoqueExistente) {
+                if (!$estoqueDao->remove($estoqueExistente)) {
+                    throw new Exception("Erro ao remover estoque existente");
+                }
+            }
+
+            // Inserir novos estoques
+            foreach ($dadosEstoques as $dadosEstoque) {
+                $estoque = new Estoque(null, $dadosEstoque['quantidade'], $dadosEstoque['preco'], $dadosEstoque['preco_custo'] ?? null, $dadosEstoque['lote'] ?? null, $produtoId);
+                $estoqueId = $estoqueDao->insere($estoque);
+
+                if ($estoqueId <= 0) {
+                    throw new Exception("Erro ao inserir novo estoque");
                 }
             }
 

@@ -30,13 +30,29 @@ if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'FORNECEDOR') {
         </div>
         
         <div class="form-group">
-            <label for="preco">Preço (R$):</label>
-            <input type="number" id="preco" name="preco" step="0.01" min="0.01" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="quantidade">Quantidade em Estoque:</label>
-            <input type="number" id="quantidade" name="quantidade" min="0" required>
+            <label>Estoques:</label>
+            <div id="estoques-container">
+                <div class="estoque-item" data-index="0">
+                    <h4>Estoque 1</h4>
+                    <div class="form-group">
+                        <label for="preco_0">Preço de Venda (R$):</label>
+                        <input type="number" id="preco_0" name="estoques[0][preco]" step="0.01" min="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantidade_0">Quantidade:</label>
+                        <input type="number" id="quantidade_0" name="estoques[0][quantidade]" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="preco_custo_0">Preço de Custo (R$):</label>
+                        <input type="number" id="preco_custo_0" name="estoques[0][preco_custo]" step="0.01" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="lote_0">Lote:</label>
+                        <input type="text" id="lote_0" name="estoques[0][lote]" maxlength="50">
+                    </div>
+                </div>
+            </div>
+            <button type="button" id="add-estoque" class="btn-secondary">Adicionar Estoque</button>
         </div>
         
         <div class="form-group">
@@ -54,6 +70,66 @@ if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'FORNECEDOR') {
 <?php include_once '../../layouts/footer.php'; ?>
 
 <script src="<?php echo BASE_URL; ?>/assets/js/dashboard/produto.js"></script>
+
+<script>
+$(document).ready(function() {
+    let estoqueIndex = 1;
+    
+    function getNextEstoqueIndex() {
+        const existingIndexes = [];
+        $('#estoques-container .estoque-item').each(function() {
+            const index = parseInt($(this).data('index'));
+            existingIndexes.push(index);
+        });
+        // Encontra o menor index não usado começando do 0
+        let nextIndex = 0;
+        while (existingIndexes.includes(nextIndex)) {
+            nextIndex++;
+        }
+        return nextIndex;
+    }
+    
+    function updateEstoqueTitles() {
+        $('#estoques-container .estoque-item').each(function(index) {
+            $(this).find('h4').text('Estoque ' + (index + 1));
+        });
+    }
+    
+    $('#add-estoque').on('click', function() {
+        const container = $('#estoques-container');
+        const nextIndex = getNextEstoqueIndex();
+        const newEstoque = `
+            <div class="estoque-item" data-index="${nextIndex}">
+                <h4>Estoque ${$('#estoques-container .estoque-item').length + 1}</h4>
+                <div class="form-group">
+                    <label for="preco_${nextIndex}">Preço de Venda (R$):</label>
+                    <input type="number" id="preco_${nextIndex}" name="estoques[${nextIndex}][preco]" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="quantidade_${nextIndex}">Quantidade:</label>
+                    <input type="number" id="quantidade_${nextIndex}" name="estoques[${nextIndex}][quantidade]" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="preco_custo_${nextIndex}">Preço de Custo (R$):</label>
+                    <input type="number" id="preco_custo_${nextIndex}" name="estoques[${nextIndex}][preco_custo]" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="lote_${nextIndex}">Lote:</label>
+                    <input type="text" id="lote_${nextIndex}" name="estoques[${nextIndex}][lote]" maxlength="50">
+                </div>
+                <button type="button" class="remove-estoque btn-danger">Remover Estoque</button>
+            </div>
+        `;
+        container.append(newEstoque);
+        updateEstoqueTitles();
+    });
+    
+    $(document).on('click', '.remove-estoque', function() {
+        $(this).closest('.estoque-item').remove();
+        updateEstoqueTitles();
+    });
+});
+</script>
 
 <style>
 .form-actions {
@@ -77,5 +153,47 @@ if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'FORNECEDOR') {
 .btn-cancel:hover {
     background-color: #7f8c8d;
     color: white;
+}
+
+.estoque-item {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.estoque-item h4 {
+    margin-top: 0;
+    color: #333;
+}
+
+.btn-secondary {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-secondary:hover {
+    background-color: #2980b9;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
 }
 </style>

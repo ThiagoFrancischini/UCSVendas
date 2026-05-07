@@ -52,6 +52,8 @@ CREATE TABLE estoque (
     id SERIAL PRIMARY KEY,
     quantidade INT NOT NULL DEFAULT 0,
     preco NUMERIC(10, 2) NOT NULL,
-    produto_id INT NOT NULL UNIQUE,
+    preco_custo NUMERIC(10, 2),
+    lote VARCHAR(50),
+    produto_id INT NOT NULL,
     CONSTRAINT fk_est_produto FOREIGN KEY (produto_id) REFERENCES produto(id) ON DELETE CASCADE
 );
