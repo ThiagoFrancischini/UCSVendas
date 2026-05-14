@@ -40,19 +40,37 @@ $produtos = $produtoDao->buscaPorFornecedorId($fornecedor->getId());
             <a href="adicionar.php" class="btn-link">Clique aqui para adicionar seu primeiro produto</a>
         </div>
     <?php else: ?>
-        <div id="grid-produtos">
-            <?php foreach ($produtos as $produto): ?>
-                <div class="produto-card" data-nome="<?php echo strtolower(htmlspecialchars($produto->getNome())); ?>" data-descricao="<?php echo strtolower(htmlspecialchars($produto->getDescricao())); ?>">
-                    <div class="produto-info">
-                        <h3><?php echo htmlspecialchars($produto->getNome()); ?></h3>
-                        <p><?php echo htmlspecialchars($produto->getDescricao()); ?></p>
-                    </div>
-                    <div class="produto-actions">
-                        <a href="editar.php?id=<?php echo $produto->getId(); ?>" class="btn-editar">Editar</a>
-                        <button class="btn-deletar" onclick="deletarProduto(<?php echo $produto->getId(); ?>)">Deletar</button>
-                    </div>
-                </div>
-            <?php endforeach; ?>
+        <div class="table-container">
+            <table class="tabela-produtos">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo-tabela">
+                    <?php foreach ($produtos as $produto): ?>
+                        <tr class="produto-row" 
+                            data-nome="<?php echo strtolower(htmlspecialchars($produto->getNome())); ?>" 
+                            data-descricao="<?php echo strtolower(htmlspecialchars($produto->getDescricao())); ?>">
+                            
+                            <td class="col-nome">
+                                <strong><?php echo htmlspecialchars($produto->getNome()); ?></strong>
+                            </td>
+                            <td class="col-descricao">
+                                <?php echo htmlspecialchars($produto->getDescricao()); ?>
+                            </td>
+                            <td class="col-actions">
+                                <div class="btn-group">
+                                    <a href="editar.php?id=<?php echo $produto->getId(); ?>" class="btn-tabela btn-editar-sm">Editar</a>
+                                    <button class="btn-tabela btn-deletar-sm" onclick="deletarProduto(<?php echo $produto->getId(); ?>)">Deletar</button>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     <?php endif; ?>
 </main>
@@ -104,58 +122,72 @@ $produtos = $produtoDao->buscaPorFornecedorId($fornecedor->getId());
     color: #1abc9c;
     text-decoration: underline;
 }
-.produto-card {
+.table-container {
     background-color: white;
-    padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    overflow-x: auto; /* Garante scroll em telas pequenas */
 }
-.produto-card h3 {
-    margin-bottom: 10px;
-    font-size: 18px;
+
+.tabela-produtos {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
 }
-.produto-card p {
-    color: #7f8c8d;
+
+.tabela-produtos th {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-bottom: 2px solid #edf2f7;
+    color: #2d3436;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.tabela-produtos td {
+    padding: 15px;
+    border-bottom: 1px solid #edf2f7;
+    color: #636e72;
     font-size: 14px;
+    vertical-align: middle;
 }
-.produto-actions {
+
+.produto-row:hover {
+    background-color: #f1faff;
+}
+
+/* Colunas específicas */
+.col-nome { width: 30%; color: #2d3436 !important; }
+.col-descricao { width: 50%; }
+.col-actions { width: 20%; text-align: center; }
+
+/* Botões menores para a tabela */
+.btn-group {
     display: flex;
-    gap: 10px;
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #ecf0f1;
+    gap: 8px;
+    justify-content: center;
 }
-.btn-editar {
-    flex: 1;
-    padding: 10px;
-    background-color: #3498db;
-    color: white;
+
+.btn-tabela {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
     text-decoration: none;
-    border-radius: 4px;
-    text-align: center;
-    font-weight: 600;
-    border: none;
     cursor: pointer;
-    font-size: 14px;
-}
-.btn-editar:hover {
-    background-color: #2980b9;
-}
-.btn-deletar {
-    flex: 1;
-    padding: 10px;
-    background-color: #e74c3c;
-    color: white;
     border: none;
-    border-radius: 4px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 14px;
+    transition: 0.2s;
 }
-.btn-deletar:hover {
-    background-color: #c0392b;
-}
-.produto-card.oculto {
+
+.btn-editar-sm { background-color: #3498db; color: white; }
+.btn-editar-sm:hover { background-color: #2980b9; }
+
+.btn-deletar-sm { background-color: #e74c3c; color: white; }
+.btn-deletar-sm:hover { background-color: #c0392b; }
+
+.produto-row.oculto {
     display: none;
 }
 </style>
@@ -188,9 +220,9 @@ $(document).ready(function() {
         var filtro = $(this).val().toLowerCase();
         
         if (filtro === '') {
-            $('.produto-card').removeClass('oculto');
+            $('.produto-row').removeClass('oculto');
         } else {
-            $('.produto-card').each(function() {
+            $('.produto-row').each(function() {
                 var nome = $(this).data('nome');
                 var descricao = $(this).data('descricao');
                 
