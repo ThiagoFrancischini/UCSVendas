@@ -11,6 +11,13 @@ class PostgresProdutoDao extends DAO implements ProdutoDao {
         parent::__construct($conn);
     }
 
+    private function decodeFoto($foto) {
+        if (is_resource($foto)) {
+            $foto = stream_get_contents($foto);
+        }
+        return $foto;
+    }
+
     public function insere($produto) {
         $query = "INSERT INTO " . $this->table_name . " 
                   (nome, descricao, foto, fornecedor_id) 
@@ -69,6 +76,7 @@ class PostgresProdutoDao extends DAO implements ProdutoDao {
      
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if($row) {
+            $row['foto'] = $this->decodeFoto($row['foto']);
             $produto = new Produto($row['id'], $row['nome'], $row['descricao'], 
                                    $row['foto'], $row['fornecedor_id']);
         } 
@@ -85,6 +93,7 @@ class PostgresProdutoDao extends DAO implements ProdutoDao {
         $stmt->execute();
      
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+            $row['foto'] = $this->decodeFoto($row['foto']);
             $produto = new Produto($row['id'], $row['nome'], $row['descricao'], 
                                    $row['foto'], $row['fornecedor_id']);
             array_push($produtos, $produto);
@@ -101,6 +110,7 @@ class PostgresProdutoDao extends DAO implements ProdutoDao {
         $stmt->execute();
      
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+            $row['foto'] = $this->decodeFoto($row['foto']);
             $produto = new Produto($row['id'], $row['nome'], $row['descricao'], 
                                    $row['foto'], $row['fornecedor_id']);
             array_push($produtos, $produto);

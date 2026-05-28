@@ -22,7 +22,7 @@ class PostgresDaoFactory extends DaoFactory {
                 $this->conn = new PDO("pgsql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name, $this->username, $this->password);
                 $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             }catch(PDOException $exception){
-                echo $exception->getMessage();
+                throw new Exception("Erro ao conectar ao banco de dados: " . $exception->getMessage());
             }
         }
         return $this->conn;
