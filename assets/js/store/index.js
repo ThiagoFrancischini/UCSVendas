@@ -65,6 +65,14 @@ function renderizaProdutos(produtos) {
         const card = document.createElement('article');
         card.className = 'produto-card';
 
+        const link = document.createElement('a');
+        link.href = window.BASE_URL
+            ? window.BASE_URL + '/views/store/detalhes.php?id=' + produto.id
+            : '../detalhes.php?id=' + produto.id;
+        link.className = 'produto-link';
+        link.style.textDecoration = 'none';
+        link.style.color = 'inherit';
+
         const imagem = document.createElement('div');
         imagem.className = 'produto-imagem';
         if (produto.foto) {
@@ -72,7 +80,7 @@ function renderizaProdutos(produtos) {
         } else {
             imagem.style.backgroundColor = '#f4f4f4';
         }
-        card.appendChild(imagem);
+        link.appendChild(imagem);
 
         const conteudo = document.createElement('div');
         conteudo.className = 'produto-conteudo';
@@ -93,7 +101,8 @@ function renderizaProdutos(produtos) {
         `;
         conteudo.appendChild(info);
 
-        card.appendChild(conteudo);
+        link.appendChild(conteudo);
+        card.appendChild(link);
         grid.appendChild(card);
     });
 }

@@ -296,3 +296,45 @@ button:disabled {
     color: #2c3e50;
     margin: 0;
 }
+
+.produto-link {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+.produto-link:hover .produto-imagem {
+    opacity: 0.9;
+}
+
+.carrinho-link {
+    font-size: 22px;
+    margin-left: 0 !important;
+    position: relative;
+    padding: 8px 14px !important;
+}
+
+.carrinho-badge {
+    background-color: #e74c3c;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    right: 2px;
+    line-height: 1.4;
+    min-width: 16px;
+    text-align: center;
+}
+
+.produto-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.produto-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+}
