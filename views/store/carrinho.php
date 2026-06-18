@@ -37,7 +37,10 @@ include_once '../layouts/header.php';
                 <span>Total:</span>
                 <strong id="carrinho-total-geral">R$ 0,00</strong>
             </div>
-            <a href="<?php echo BASE_URL; ?>/views/store/index.php" class="btn-continuar">Continuar comprando</a>
+            <div class="carrinho-acoes">
+                <a href="<?php echo BASE_URL; ?>/views/store/index.php" class="btn-continuar">Continuar comprando</a>
+                <a href="<?php echo BASE_URL; ?>/views/store/checkout.php" class="btn-finalizar-carrinho">Finalizar Pedido</a>
+            </div>
         </div>
     </div>
 </main>
@@ -156,19 +159,24 @@ include_once '../layouts/header.php';
 
 .btn-remover {
     background: none;
-    border: none;
+    border: 1.5px solid #fee2e2;
     color: #e74c3c;
     cursor: pointer;
     font-size: 13px;
     font-weight: 600;
-    padding: 8px 12px;
+    padding: 7px 12px;
     width: auto;
     border-radius: 6px;
-    transition: background 0.2s;
+    transition: background 0.2s, border-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .btn-remover:hover {
-    background: #fdf2f2;
+    background: #fef2f2;
+    border-color: #fca5a5;
+    box-shadow: none;
 }
 
 .carrinho-resumo {
@@ -207,6 +215,31 @@ include_once '../layouts/header.php';
 
 .btn-continuar:hover {
     background: #16a085;
+    color: #fff;
+}
+
+.carrinho-acoes {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.btn-finalizar-carrinho {
+    display: inline-block;
+    background: #2ecc71;
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 15px;
+    transition: background 0.2s;
+}
+
+.btn-finalizar-carrinho:hover {
+    background: #27ae60;
     color: #fff;
 }
 

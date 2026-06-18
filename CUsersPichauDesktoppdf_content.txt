@@ -1,0 +1,106 @@
+=== PAGE 1 ===
+Universidade de Caxias do Sul – Área de Conhecimento
+de Ciências Exatas e Engenharias
+Avaliação de Disciplina
+Código: ADS3006 Ano/
+Semestre:
+2026/2
+Disciplina: Programação de Aplicações Web II Turma: A
+Professor: Data: 09/04/2026
+Avaliação: Trabalho de Implementação T1 e T2
+Objetivo : Testar a proficiência dos alunos na implementação de um sistema para web,
+utilizando as HTML5, CSS3, JavaScript e PHP.
+Forma de realização: Os alunos se dividirão em duplas , que realizarão a implementação
+de um sistema que será descrito abaixo.
+Forma de Apresentação  : O trabalho deverá ser entregue em arquivo zipado, no AVA,
+contendo o projeto PHP com os códigos fontes, páginas HTML/PHP, scripts de bancos de
+dados  e  todos  os  artefatos  necessários  para  a  execução  do  software,  que  deverá
+obrigatoriamente executar assim que seja realizad a sua instalação em um servidor PHP e
+executado o script de inicialização do banco de dados.
+Data de Entrega : O trabalho deverá ser entregue e apresentado em 30/04/2026 (parte
+1) e 02/07/2026 (parte 2) . Após essas datas, os trabalhos perdem dois pontos por atraso
+(cada parte).
+Critérios de Avaliação  : Será realizada apresentação em sala de aula de cada trabalho,
+pelo respectivo grupo , para o professor, e nessa apresentação os componentes d o grupo
+terão  que  explicar  como  modelaram  e  implementaram  partes  da  aplicação,  conforme
+questionamentos do mesmo.
+Serão avaliados: 
+ A execução das tarefas descritas para o sistema (o sistema faz o que pede) ?
+ A estruturação do modelo e subdivisão do sistema em classes (Obrigatório
+utilizar OO).
+ A correção do código
+
+=== PAGE 2 ===
+O Projeto:
+Será implementado um sistema de pedidos de uma loja virtual, compondo uma
+aplicação Web. O trabalho deverá obrigatoriamente utilizar as tecnologias apresentadas em
+aula.
+O modelo de negócio da loja está anexo neste documento.
+Os alunos podem acrescentar classes e funcionalidades ao sistema como preferirem.
+NÃO é permitido excluir classes ou funcionalidades, sendo as citadas no modelo o mínimo
+aceitável.
+Deverão ser implementados:
+Parte 1)
+• Cadastro de usuários e mecanismo de login.
+• Cadastros de fornecedores
+• Cadastro de produtos (sem imagem), relacionando-os aos fornecedores.
+• Manutenção do estoque de produtos
+Para cada cadastro, devem ser implementadas as seguintes funcionalidades:
+ Inclusão
+ Alteração
+ Exclusão
+ Consulta ( por código e por nome )
+Parte 2)
+• Upload das imagens dos produtos (no cadastro de produtos)
+• Inclusão de paginação nos cadastros de fornecedores, produtos e usuários.
+• Tela de consulta de produtos (com pesquisa) e realização de pedidos. (Ator Cliente -
+Carrinho de compras. Ao mandar encerrar o pedido deverá ser realizado o cadastro,
+se o cliente for um novo cliente, ou login do cliente, se o cliente estiver voltando à
+loja). 
+• Só se pode vender itens que estão em estoque
+=== PAGE 3 ===
+• Itens com estoque ZERO devem ser mostrados como indisponíveis.
+• A realização do pedido deve diminuir a quantidade do estoque. 
+• Se o cliente quiser comprar mais do que há em estoque deve receber uma
+mensagem de erro, oferecendo-lhe a quantidade máxima disponível.
+• Deve ser calculado o valor total do pedido e exibido ao cliente. (Utilizando
+AJAX)
+• Tela de consulta de pedidos realizados por parte da administração da loja ( Ator
+Interno) , onde será possível consultar e alterar o status do pedido, gravando para
+isso as datas de envio e / ou cancelamento.
+• Deve ser possível consultar pedidos pelo número do pedido ou pelo nome do
+cliente
+• Os pedidos devem ser exibidos utilizando páginas em mestre-detalhe, com o
+cabeçalho (mestre) mostrando  os dados do pedido (data, cliente, nro, valor
+total, etc..) e o corpo (detalhe) mostrando a foto, de scrição,  quantidade,
+valor unitário e valor total de cada item do pedido. Essa página deverá possuir
+paginação de dados, e seus itens deverão ser carregados através de AJAX.
+Tanto usuários internos como o cliente que fez o pedido podem acessar esses
+dados.
+• No pedido deverá ser exibido um carrossel com as fotos de todos os itens do
+pedido.
+• Deverá ser construída API REST que permita a consulta dos pedidos, também pelo
+número do pedido ou pelo nome do cliente. Essa API deverá ser acessada através de
+um plugin REST do navegador.
+A aplicação deverá ser implementada utilizando layout responsivo e deverá ser
+possível utilizá-la em um aparelho celeular sem problemas de usabilidade. O layout
+também será avaliado, portanto caprichem no CSS.
+A  aplicação  deverá  implementar  todos  os  requisitos previstos  neste
+documento. 
+O padrão de interface utilizado será o mesmo adotado pelo site Mercado Livre
+(http://www.mercadolivre.com.br),  que  servirá  como  modelo.  O  sistema  será
+utilizado por dois atores: Internos(Vendedores) e Clientes. Os usuários de sistema
+=== PAGE 4 ===
+deverão acessar as funcionalidades do sistema através de links, porém o ator Cliente
+só pode acessar a consulta de produtos e realização de pedidos. Já os usuários
+Internos podem cadastrar os fornecedores e produtos, além de poder consultar os
+pedidos realizados. Cabe aos programadores definir modos de exibir somente as
+opções que um ator pode acessar, de acordo com o usuário logado.
+O modelo de classes da aplicação proposta é apresentado a seguir:
+O trabalho será dividido em duas partes. A primeira consiste-se da implementação
+dos  layouts da aplicação e das telas de cadastros de Usuários, Clientes e Fornecedores,
+entregue na data informada no início desta definição, e a  segunda, com a aplicação
+completa, deverá ser entregue no final do semestre.
+Como banco de dados deverá ser utilizado o PostgreSQL ou o MySQL.
+Bom Trabalho!
+

@@ -93,7 +93,11 @@ $estoques = $estoqueDao->buscaPorProdutoId($produtoId);
         
         <div class="form-group">
             <label for="foto">URL da Foto:</label>
-            <input type="url" id="foto" name="foto" value="<?php echo htmlspecialchars(is_string($produto->getFoto()) ? $produto->getFoto() : ''); ?>">
+            <input type="url" id="foto" name="foto" placeholder="https://exemplo.com/imagem.jpg" value="<?php echo htmlspecialchars(is_string($produto->getFoto()) ? $produto->getFoto() : ''); ?>">
+            <?php $fotoAtual = is_string($produto->getFoto()) ? $produto->getFoto() : ''; ?>
+            <div id="foto-preview-wrap" style="margin-top:10px;<?php echo $fotoAtual ? '' : 'display:none'; ?>">
+                <img id="foto-preview" src="<?php echo htmlspecialchars($fotoAtual); ?>" alt="Prévia" style="max-width:200px;max-height:200px;border-radius:8px;border:1px solid #ddd;object-fit:cover;">
+            </div>
         </div>
         
         <div class="form-actions">
@@ -106,6 +110,22 @@ $estoques = $estoqueDao->buscaPorProdutoId($produtoId);
 <?php include_once '../../layouts/footer.php'; ?>
 
 <script src="<?php echo BASE_URL; ?>/assets/js/dashboard/produto.js"></script>
+
+<script>
+document.getElementById('foto').addEventListener('input', function() {
+    const url = this.value.trim();
+    const wrap = document.getElementById('foto-preview-wrap');
+    const img  = document.getElementById('foto-preview');
+    if (url) {
+        img.src = url;
+        wrap.style.display = 'block';
+        img.onerror = function() { wrap.style.display = 'none'; };
+        img.onload  = function() { wrap.style.display = 'block'; };
+    } else {
+        wrap.style.display = 'none';
+    }
+});
+</script>
 
 <script>
 $(document).ready(function() {

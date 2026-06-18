@@ -11,13 +11,6 @@ class PostgresProdutoDao extends DAO implements ProdutoDao {
         parent::__construct($conn);
     }
 
-    private function decodeFoto($foto) {
-        if (is_resource($foto)) {
-            $foto = stream_get_contents($foto);
-        }
-        return $foto;
-    }
-
     public function insere($produto) {
         $query = "INSERT INTO " . $this->table_name . " 
                   (nome, descricao, foto, fornecedor_id) 
@@ -76,7 +69,7 @@ class PostgresProdutoDao extends DAO implements ProdutoDao {
      
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if($row) {
-            $row['foto'] = $this->decodeFoto($row['foto']);
+            $row['foto'] = $row['foto'];
             $produto = new Produto($row['id'], $row['nome'], $row['descricao'], 
                                    $row['foto'], $row['fornecedor_id']);
         } 
@@ -93,12 +86,45 @@ class PostgresProdutoDao extends DAO implements ProdutoDao {
         $stmt->execute();
      
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-            $row['foto'] = $this->decodeFoto($row['foto']);
+            $row['foto'] = $row['foto'];
             $produto = new Produto($row['id'], $row['nome'], $row['descricao'], 
                                    $row['foto'], $row['fornecedor_id']);
             array_push($produtos, $produto);
         }
         return $produtos;
+    }
+
+    public function buscaPorFornecedorIdPaginado($fornecedor_id, $busca, $pagina, $porPagina) {
+        $produtos = array();
+        $offset = ($pagina - 1) * $porPagina;
+        $like = '%' . $busca . '%';
+        $query = "SELECT id, nome, descricao, foto, fornecedor_id FROM " . $this->table_name .
+                 " WHERE fornecedor_id = :fid AND (nome ILIKE :busca OR descricao ILIKE :busca2)
+                   ORDER BY nome ASC LIMIT :limite OFFSET :offset";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':fid', (int)$fornecedor_id, PDO::PARAM_INT);
+        $stmt->bindValue(':busca', $like);
+        $stmt->bindValue(':busca2', $like);
+        $stmt->bindValue(':limite', (int)$porPagina, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $stmt->execute();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $row['foto'] = $row['foto'];
+            $produtos[] = new Produto($row['id'], $row['nome'], $row['descricao'], $row['foto'], $row['fornecedor_id']);
+        }
+        return $produtos;
+    }
+
+    public function contarPorFornecedorId($fornecedor_id, $busca) {
+        $like = '%' . $busca . '%';
+        $query = "SELECT COUNT(*) FROM " . $this->table_name .
+                 " WHERE fornecedor_id = :fid AND (nome ILIKE :busca OR descricao ILIKE :busca2)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':fid', (int)$fornecedor_id, PDO::PARAM_INT);
+        $stmt->bindValue(':busca', $like);
+        $stmt->bindValue(':busca2', $like);
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
     }
 
     public function buscaTodos() {
@@ -110,7 +136,7 @@ class PostgresProdutoDao extends DAO implements ProdutoDao {
         $stmt->execute();
      
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-            $row['foto'] = $this->decodeFoto($row['foto']);
+            $row['foto'] = $row['foto'];
             $produto = new Produto($row['id'], $row['nome'], $row['descricao'], 
                                    $row['foto'], $row['fornecedor_id']);
             array_push($produtos, $produto);

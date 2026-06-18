@@ -6,6 +6,7 @@ include_once(__DIR__ . '/PostgresClienteDao.php');
 include_once(__DIR__ . '/PostgresFornecedorDao.php');
 include_once(__DIR__ . '/PostgresProdutoDao.php');
 include_once(__DIR__ . '/PostgresEstoqueDao.php');
+include_once(__DIR__ . '/PostgresPedidoDao.php');
 
 class PostgresDaoFactory extends DaoFactory {
 
@@ -50,6 +51,10 @@ class PostgresDaoFactory extends DaoFactory {
 
     public function getEstoqueDao() {
         return new PostgresEstoqueDao($this->getConnection());
+    }
+
+    public function getPedidoDao() {
+        return new PostgresPedidoDao($this->getConnection());
     }
 }
 ?>

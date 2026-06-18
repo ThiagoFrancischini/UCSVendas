@@ -7,5 +7,7 @@ interface UsuarioDao {
     public function buscaPorEmail($email);
     public function buscaTodos();
     public function existePorEmail($email);
+    public function buscaPaginado($busca, $pagina, $porPagina);
+    public function contar($busca);
 }
 ?>

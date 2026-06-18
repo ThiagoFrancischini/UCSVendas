@@ -43,7 +43,7 @@ CREATE TABLE produto (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(150) NOT NULL,
     descricao TEXT NOT NULL,
-    foto BYTEA,
+    foto TEXT,
     fornecedor_id INT NOT NULL,
     CONSTRAINT fk_prod_fornecedor FOREIGN KEY (fornecedor_id) REFERENCES fornecedor(id) ON DELETE CASCADE
 );
@@ -56,4 +56,25 @@ CREATE TABLE estoque (
     lote VARCHAR(50),
     produto_id INT NOT NULL,
     CONSTRAINT fk_est_produto FOREIGN KEY (produto_id) REFERENCES produto(id) ON DELETE CASCADE
+);
+
+CREATE TABLE pedido (
+    id SERIAL PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    data_pedido TIMESTAMP NOT NULL DEFAULT NOW(),
+    status VARCHAR(30) NOT NULL DEFAULT 'PENDENTE',
+    data_envio TIMESTAMP,
+    data_cancelamento TIMESTAMP,
+    valor_total NUMERIC(10, 2) NOT NULL DEFAULT 0,
+    CONSTRAINT fk_ped_cliente FOREIGN KEY (cliente_id) REFERENCES cliente(id) ON DELETE RESTRICT
+);
+
+CREATE TABLE item_pedido (
+    id SERIAL PRIMARY KEY,
+    pedido_id INT NOT NULL,
+    estoque_id INT NOT NULL,
+    quantidade INT NOT NULL,
+    valor_unitario NUMERIC(10, 2) NOT NULL,
+    CONSTRAINT fk_item_pedido FOREIGN KEY (pedido_id) REFERENCES pedido(id) ON DELETE CASCADE,
+    CONSTRAINT fk_item_estoque FOREIGN KEY (estoque_id) REFERENCES estoque(id) ON DELETE RESTRICT
 );

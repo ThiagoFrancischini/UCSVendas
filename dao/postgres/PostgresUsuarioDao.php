@@ -102,6 +102,32 @@ class PostgresUsuarioDao extends DAO implements UsuarioDao {
         return $usuarios;
     }
 
+    public function buscaPaginado($busca, $pagina, $porPagina) {
+        $usuarios = array();
+        $offset = ($pagina - 1) * $porPagina;
+        $like = '%' . $busca . '%';
+        $query = "SELECT id, email, senha, perfil FROM " . $this->table_name .
+                 " WHERE email ILIKE :busca ORDER BY id ASC LIMIT :limite OFFSET :offset";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':busca', $like);
+        $stmt->bindValue(':limite', (int)$porPagina, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $stmt->execute();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $usuarios[] = new Usuario($row['id'], $row['email'], $row['senha'], $row['perfil']);
+        }
+        return $usuarios;
+    }
+
+    public function contar($busca) {
+        $like = '%' . $busca . '%';
+        $query = "SELECT COUNT(*) FROM " . $this->table_name . " WHERE email ILIKE :busca";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':busca', $like);
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
+    }
+
     public function existePorEmail($email) {
         $query = "SELECT id FROM " . $this->table_name . " WHERE email = ? LIMIT 1";
         $stmt = $this->conn->prepare($query);

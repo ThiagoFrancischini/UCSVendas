@@ -8,5 +8,6 @@ abstract class DaoFactory {
     public abstract function getFornecedorDao();
     public abstract function getProdutoDao();
     public abstract function getEstoqueDao();
+    public abstract function getPedidoDao();
 }
 ?>

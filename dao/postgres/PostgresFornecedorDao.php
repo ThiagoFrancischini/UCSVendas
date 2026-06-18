@@ -97,6 +97,33 @@ class PostgresFornecedorDao extends DAO implements FornecedorDao {
         return $fornecedor;
     }
 
+    public function buscaPaginado($busca, $pagina, $porPagina) {
+        $fornecedores = array();
+        $offset = ($pagina - 1) * $porPagina;
+        $like = '%' . $busca . '%';
+        $query = "SELECT id, nome, descricao, telefone, cnpj, usuario_id, endereco_id
+                  FROM " . $this->table_name . " WHERE nome ILIKE :busca ORDER BY nome ASC LIMIT :limite OFFSET :offset";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':busca', $like);
+        $stmt->bindValue(':limite', (int)$porPagina, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $stmt->execute();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $fornecedores[] = new Fornecedor($row['id'], $row['nome'], $row['descricao'],
+                                             $row['telefone'], $row['cnpj'], $row['usuario_id'], $row['endereco_id']);
+        }
+        return $fornecedores;
+    }
+
+    public function contar($busca) {
+        $like = '%' . $busca . '%';
+        $query = "SELECT COUNT(*) FROM " . $this->table_name . " WHERE nome ILIKE :busca";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':busca', $like);
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
+    }
+
     public function buscaTodos() {
         $fornecedores = array();
         $query = "SELECT id, nome, descricao, telefone, cnpj, usuario_id, endereco_id 

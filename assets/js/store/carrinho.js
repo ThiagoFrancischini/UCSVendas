@@ -47,7 +47,7 @@ function renderizarItens(itens, totalGeral) {
             '<td class="carrinho-item-preco">R$ ' + item.preco.toFixed(2).replace('.', ',') + '</td>' +
             '<td><input type="number" class="carrinho-qtd-input" value="' + item.quantidade + '" min="1" data-produto-id="' + item.produto_id + '"></td>' +
             '<td class="carrinho-item-subtotal">R$ ' + subtotal + '</td>' +
-            '<td><button class="btn-remover" data-produto-id="' + item.produto_id + '">Remover</button></td>';
+            '<td><button class="btn-remover" data-produto-id="' + item.produto_id + '"><i class="fas fa-trash-alt"></i> Remover</button></td>';
 
         tbody.appendChild(tr);
     });

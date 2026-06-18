@@ -6,5 +6,7 @@ interface ProdutoDao {
     public function buscaPorId($id);
     public function buscaPorFornecedorId($fornecedor_id);
     public function buscaTodos();
+    public function buscaPorFornecedorIdPaginado($fornecedor_id, $busca, $pagina, $porPagina);
+    public function contarPorFornecedorId($fornecedor_id, $busca);
 }
 ?>

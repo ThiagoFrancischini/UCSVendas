@@ -9,7 +9,7 @@ include_once '../layouts/header.php';
     <div class="detalhes-loading" id="detalhes-loading">Carregando produto...</div>
     <div class="detalhes-content" id="detalhes-content" style="display:none">
         <div class="detalhes-voltar">
-            <a href="<?php echo BASE_URL; ?>/views/store/index.php">&larr; Voltar para vitrine</a>
+            <a href="<?php echo BASE_URL; ?>/views/store/index.php"><i class="fas fa-arrow-left"></i> Voltar para vitrine</a>
         </div>
         <div class="detalhes-grid">
             <div class="detalhes-imagem-wrapper">
@@ -32,7 +32,7 @@ include_once '../layouts/header.php';
                         <label for="qtd-input">Quantidade:</label>
                         <input type="number" id="qtd-input" value="1" min="1" max="999">
                     </div>
-                    <button id="btn-adicionar-carrinho" class="btn-comprar">Adicionar ao Carrinho</button>
+                    <button id="btn-adicionar-carrinho" class="btn-comprar"><i class="fas fa-cart-plus"></i> Adicionar ao Carrinho</button>
                     <div class="detalhes-msg" id="detalhes-msg"></div>
                 </div>
             </div>
