@@ -34,6 +34,7 @@ class UsuarioController {
                     $_SESSION['cliente_id'] = $cliente->getId();
                 }
             }
+            // ADMIN não tem registro em tabelas filha
 
             return true;
         }
@@ -60,13 +61,14 @@ class UsuarioController {
                 if ($fornecedor) {
                     $nome = $fornecedor->getNome();
                 }
-            } else {
+            } elseif ($usuario->getPerfil() === 'CLIENTE') {
                 $clienteDao = $factory->getClienteDao();
                 $cliente = $clienteDao->buscaPorUsuarioId($usuario->getId());
                 if ($cliente) {
                     $nome = $cliente->getNome();
                 }
             }
+            // ADMIN: usa email como nome
         }
 
         return [

@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 if (session_status() == PHP_SESSION_NONE) session_start();
-if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'FORNECEDOR') {
+if (!isset($_SESSION['perfil']) || !in_array($_SESSION['perfil'], ['FORNECEDOR', 'ADMIN'])) {
     echo json_encode(['sucesso' => false, 'mensagem' => 'Acesso negado.']);
     exit;
 }

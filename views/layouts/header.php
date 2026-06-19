@@ -33,6 +33,12 @@ if (session_status() == PHP_SESSION_NONE) {
                                 <a href="<?php echo BASE_URL; ?>/api/processa_logout.php" class="logout-link">Sair</a>
                             </div>
                         </div>
+                    <?php elseif ($_SESSION['perfil'] === 'ADMIN'): ?>
+                        <a href="<?php echo BASE_URL; ?>/views/admin/index.php">Painel Admin</a>
+                        <a href="<?php echo BASE_URL; ?>/views/admin/clientes/index.php">Clientes</a>
+                        <a href="<?php echo BASE_URL; ?>/views/admin/fornecedores/index.php">Fornecedores</a>
+                        <a href="<?php echo BASE_URL; ?>/views/admin/usuarios/index.php">Usuários</a>
+                        <a href="<?php echo BASE_URL; ?>/api/processa_logout.php">Sair</a>
                     <?php else: ?>
                         <a href="<?php echo BASE_URL; ?>/views/store/meus_pedidos.php">Meus Pedidos</a>
                         <a href="<?php echo BASE_URL; ?>/views/perfil/index.php">Minha Conta</a>
