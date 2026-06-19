@@ -18,8 +18,14 @@ $(document).ready(function() {
             },
             success: function(response) {
                 if (response.sucesso) {
+                    var params = new URLSearchParams(window.location.search);
+                    var redirect = params.get('redirect');
                     if (response.perfil === 'FORNECEDOR') {
                         window.location.href = '../dashboards/index.php';
+                    } else if (response.perfil === 'ADMIN') {
+                        window.location.href = '../admin/index.php';
+                    } else if (redirect === 'checkout') {
+                        window.location.href = '../store/checkout.php';
                     } else {
                         window.location.href = '../store/index.php';
                     }

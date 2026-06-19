@@ -48,11 +48,12 @@ include_once '../layouts/header.php';
 
 <style>
 .detalhes-produto {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 0 20px;
+    max-width: none;
+    margin: 0;
+    padding: 32px 40px;
     background: transparent;
     box-shadow: none;
+    border: none;
 }
 
 .detalhes-loading {

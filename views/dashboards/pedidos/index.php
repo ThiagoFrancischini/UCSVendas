@@ -97,7 +97,7 @@ window.BASE_URL = '<?php echo BASE_URL; ?>';
 <script src="<?php echo BASE_URL; ?>/assets/js/dashboard/pedidos.js"></script>
 
 <style>
-.ped-admin-page { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+.ped-admin-page { max-width: none; background: transparent; box-shadow: none; border: none; padding: 32px 40px; margin: 0; }
 .ped-admin-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; }
 .ped-admin-header h1 { font-size: 26px; margin: 0; }
 .ped-busca { display: flex; gap: 8px; flex-wrap: wrap; }

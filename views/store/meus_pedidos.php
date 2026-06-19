@@ -59,7 +59,7 @@ window.BASE_URL = '<?php echo BASE_URL; ?>';
 <script src="<?php echo BASE_URL; ?>/assets/js/store/meus_pedidos.js"></script>
 
 <style>
-.meus-pedidos-page { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+.meus-pedidos-page { max-width: none; margin: 0; padding: 32px 40px; background: transparent; box-shadow: none; border: none; }
 .meus-pedidos-page h1 { font-size: 26px; margin-bottom: 24px; }
 .loading-msg, .vazio-msg { text-align: center; padding: 60px 0; color: #888; font-size: 16px; }
 .pedido-card { background: #fff; border: 1px solid #e8edf3; border-radius: 16px; padding: 22px 28px; margin-bottom: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); transition: box-shadow .2s; }

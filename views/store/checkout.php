@@ -43,30 +43,12 @@ include_once '../layouts/header.php';
             <button class="btn-primary" onclick="fazerLogin()">Entrar</button>
         </div>
 
-        <!-- Registro rápido -->
+        <!-- Criar conta -->
         <div id="tab-registro" class="auth-form" style="display:none">
-            <div id="msg-registro" class="form-msg"></div>
-            <label>Nome</label>
-            <input type="text" id="reg-nome" placeholder="Seu nome completo">
-            <label>E-mail</label>
-            <input type="email" id="reg-email" placeholder="seu@email.com">
-            <label>Senha</label>
-            <input type="password" id="reg-senha" placeholder="Mínimo 6 caracteres">
-            <label>Telefone</label>
-            <input type="text" id="reg-telefone" placeholder="(00) 00000-0000">
-            <label>CEP</label>
-            <input type="text" id="reg-cep" placeholder="00000-000">
-            <label>Rua</label>
-            <input type="text" id="reg-rua" placeholder="Rua">
-            <label>Número</label>
-            <input type="text" id="reg-numero" placeholder="Número">
-            <label>Bairro</label>
-            <input type="text" id="reg-bairro" placeholder="Bairro">
-            <label>Cidade</label>
-            <input type="text" id="reg-cidade" placeholder="Cidade">
-            <label>Estado</label>
-            <input type="text" id="reg-estado" placeholder="RS" maxlength="2">
-            <button class="btn-primary" onclick="fazerRegistro()">Criar conta e continuar</button>
+            <p style="color:#555;margin-bottom:20px;line-height:1.6;">Crie sua conta de cliente para poder finalizar pedidos. Após o cadastro você será redirecionado de volta para o checkout.</p>
+            <a href="<?php echo BASE_URL; ?>/views/auth/registro.php?redirect=checkout" class="btn-primary" style="text-decoration:none;display:flex;">
+                <i class="fas fa-user-plus"></i> Criar minha conta
+            </a>
         </div>
     </section>
     <?php endif; ?>
@@ -86,9 +68,9 @@ window.LOGADO_COMO_CLIENTE = <?php echo (isset($_SESSION['perfil']) && $_SESSION
 <script src="<?php echo BASE_URL; ?>/assets/js/store/checkout.js"></script>
 
 <style>
-.checkout-page { max-width: 760px; margin: 40px auto; padding: 0 20px; }
+.checkout-page { max-width: none; margin: 0; padding: 32px 40px; background: transparent; box-shadow: none; border: none; }
 .checkout-page h1 { font-size: 26px; margin-bottom: 24px; }
-.checkout-resumo, .checkout-auth { background: #fff; border: 1px solid #ececec; border-radius: 16px; padding: 28px; margin-bottom: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
+.checkout-resumo, .checkout-auth { background: #fff; border: 1px solid #ececec; border-radius: 16px; padding: 28px; margin-bottom: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.04); max-width: 860px; }
 .checkout-resumo h2, .checkout-auth h2 { font-size: 18px; margin-bottom: 16px; color: #2c3e50; }
 .checkout-tabela { width: 100%; border-collapse: collapse; }
 .checkout-tabela th, .checkout-tabela td { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; text-align: left; }
@@ -105,7 +87,7 @@ window.LOGADO_COMO_CLIENTE = <?php echo (isset($_SESSION['perfil']) && $_SESSION
 .form-msg.ok { background: #f0fdf4; color: #16a085; display: block; }
 .btn-primary { margin-top: 16px; width: 100%; padding: 12px; background: #1abc9c; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .btn-primary:hover { background: #16a085; box-shadow: 0 2px 8px rgba(26,188,156,.3); }
-.checkout-actions { display: flex; flex-direction: column; gap: 12px; }
+.checkout-actions { display: flex; flex-direction: column; gap: 12px; max-width: 860px; }
 .btn-finalizar { padding: 14px 28px; background: #27ae60; color: #fff; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .btn-finalizar:hover { background: #219a52; box-shadow: 0 3px 10px rgba(39,174,96,.35); }
 .btn-finalizar:disabled { background: #94a3b8; cursor: not-allowed; box-shadow: none; }

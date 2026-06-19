@@ -27,9 +27,7 @@ include_once '../layouts/header.php';
 
 <style>
 .vitrine {
-    max-width: 1200px;
-    margin: 40px auto;
-    padding: 0 20px;
+    padding: 32px 40px;
 }
 
 .page-header {

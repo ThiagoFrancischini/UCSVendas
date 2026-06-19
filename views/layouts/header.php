@@ -20,7 +20,9 @@ if (session_status() == PHP_SESSION_NONE) {
         <div class="header-container">
             <a href="<?php echo BASE_URL; ?>/index.php" class="logo">UCS Vendas</a>
             <nav class="nav-links">
+                <?php if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] === 'CLIENTE'): ?>
                 <a href="<?php echo BASE_URL; ?>/views/store/carrinho.php" class="carrinho-link"><i class="fas fa-shopping-cart"></i><span id="carrinho-badge" class="carrinho-badge" style="display:none">0</span></a>
+                <?php endif; ?>
                 <?php if (isset($_SESSION['perfil'])): ?>
                     <?php if ($_SESSION['perfil'] === 'FORNECEDOR'): ?>
                         <a href="<?php echo BASE_URL; ?>/views/dashboards/index.php">Painel</a>

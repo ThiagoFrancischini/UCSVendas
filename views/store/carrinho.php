@@ -2,6 +2,11 @@
 if (!defined('BASE_URL')) {
     require_once(__DIR__ . '/../../config.php');
 }
+if (session_status() == PHP_SESSION_NONE) session_start();
+if (isset($_SESSION['perfil']) && $_SESSION['perfil'] === 'FORNECEDOR') {
+    header('Location: ' . BASE_URL . '/views/dashboards/index.php');
+    exit;
+}
 include_once '../layouts/header.php';
 ?>
 
@@ -52,11 +57,12 @@ include_once '../layouts/header.php';
 
 <style>
 .carrinho-page {
-    max-width: 960px;
-    margin: 40px auto;
-    padding: 0 20px;
+    max-width: none;
+    margin: 0;
+    padding: 32px 40px;
     background: transparent;
     box-shadow: none;
+    border: none;
 }
 
 .carrinho-header h1 {

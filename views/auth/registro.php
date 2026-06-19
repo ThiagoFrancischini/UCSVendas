@@ -2,6 +2,7 @@
 if (!defined('BASE_URL')) {
     require_once(__DIR__ . '/../../config.php');
 }
+$redirect = htmlspecialchars($_GET['redirect'] ?? '', ENT_QUOTES);
 include_once '../layouts/header.php';
 ?>
 
@@ -71,4 +72,5 @@ include_once '../layouts/header.php';
 
 <?php include_once '../layouts/footer.php'; ?>
 
+<script>window.REGISTRO_REDIRECT = '<?php echo $redirect; ?>';</script>
 <script src="../../assets/js/auth/registro.js"></script>

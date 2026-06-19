@@ -5,14 +5,14 @@ if (!defined('BASE_URL')) {
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'FORNECEDOR') {
+if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'ADMIN') {
     header('Location: ' . BASE_URL . '/views/store/index.php');
     exit;
 }
 ?>
 <?php include_once '../../layouts/header.php'; ?>
 
-<main>
+<main class="dash-main">
     <div class="page-header">
         <h1>Fornecedores</h1>
     </div>

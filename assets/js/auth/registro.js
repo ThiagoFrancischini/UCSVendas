@@ -75,7 +75,8 @@ $(document).ready(function() {
                 if (response.sucesso) {
                     mensagemDiv.addClass('alert alert-success').text('Cadastro realizado com sucesso! Redirecionando para o login...').show();
                     setTimeout(function() {
-                        window.location.href = 'login.php';
+                        var redirect = window.REGISTRO_REDIRECT || '';
+                        window.location.href = 'login.php' + (redirect ? '?redirect=' + encodeURIComponent(redirect) : '');
                     }, 2000);
                 } else {
                     mensagemDiv.addClass('alert alert-error').text(response.mensagem).show();

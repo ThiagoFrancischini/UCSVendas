@@ -13,7 +13,7 @@ if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'FORNECEDOR') {
 ?>
 <?php include_once '../layouts/header.php'; ?>
 
-<main>
+<main class="dash-main">
     <h1>Painel do Fornecedor</h1>
     
     <div class="dashboard-cards">
@@ -27,18 +27,6 @@ if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'FORNECEDOR') {
             <div class="dashboard-card-icon"><i class="fas fa-receipt"></i></div>
             <h3>Pedidos</h3>
             <p>Consulte e gerencie os pedidos recebidos</p>
-        </a>
-
-        <a href="fornecedores/index.php" class="dashboard-card card-purple">
-            <div class="dashboard-card-icon"><i class="fas fa-truck"></i></div>
-            <h3>Fornecedores</h3>
-            <p>Consulte e remova fornecedores cadastrados</p>
-        </a>
-
-        <a href="usuarios/index.php" class="dashboard-card card-orange">
-            <div class="dashboard-card-icon"><i class="fas fa-users"></i></div>
-            <h3>Usuários</h3>
-            <p>Consulte e remova usuários do sistema</p>
         </a>
 
         <a href="../perfil/index.php" class="dashboard-card card-gray">

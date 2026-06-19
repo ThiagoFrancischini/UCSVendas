@@ -12,7 +12,7 @@ if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'FORNECEDOR') {
 ?>
 <?php include_once '../../layouts/header.php'; ?>
 
-<main>
+<main class="dash-main">
     <div class="page-header">
         <h1>Meus Produtos</h1>
         <a href="adicionar.php" class="btn-primary"><i class="fas fa-plus"></i> Adicionar Produto</a>
