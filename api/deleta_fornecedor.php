@@ -27,9 +27,24 @@ if (!$fornecedor) {
     exit;
 }
 
+$conn = $factory->getConnection();
+
+// Verifica se algum produto do fornecedor aparece em pedidos
+$stmtCheck = $conn->prepare("
+    SELECT COUNT(*) FROM item_pedido ip
+    INNER JOIN estoque e ON e.id = ip.estoque_id
+    INNER JOIN produto p ON p.id = e.produto_id
+    WHERE p.fornecedor_id = ?
+");
+$stmtCheck->execute([$id]);
+if ((int)$stmtCheck->fetchColumn() > 0) {
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Não é possível excluir: este fornecedor possui produtos que constam em pedidos registrados.']);
+    exit;
+}
+
 try {
-    $ok = $dao->remove($fornecedor);
-    echo json_encode(['sucesso' => $ok]);
-} catch (Exception $e) {
-    echo json_encode(['sucesso' => false, 'mensagem' => $e->getMessage()]);
+    $dao->remove($fornecedor);
+    echo json_encode(['sucesso' => true]);
+} catch (Throwable $e) {
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Não é possível excluir: este fornecedor possui produtos que constam em pedidos registrados.']);
 }

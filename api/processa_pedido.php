@@ -33,9 +33,10 @@ include_once(__DIR__ . '/../controllers/PedidoController.php');
 
 try {
     $controller = new PedidoController();
-    $pedidoId = $controller->finalizarPedido($_SESSION['cliente_id'], $_SESSION['carrinho']);
+    $pedidoIds = $controller->finalizarPedido($_SESSION['cliente_id'], $_SESSION['carrinho']);
     $_SESSION['carrinho'] = [];
-    respondeJson(['sucesso' => true, 'pedido_id' => $pedidoId]);
+    $idsParam = implode(',', $pedidoIds);
+    respondeJson(['sucesso' => true, 'pedido_ids' => $pedidoIds, 'redirecionar' => BASE_URL . '/views/store/pagamento.php?pedidos=' . $idsParam]);
 } catch (Exception $e) {
     respondeJson(['sucesso' => false, 'mensagem' => $e->getMessage()]);
 }

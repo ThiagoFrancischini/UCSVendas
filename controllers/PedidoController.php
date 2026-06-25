@@ -11,9 +11,8 @@ class PedidoController {
     }
 
     /**
-     * Finaliza o carrinho da sessão como um pedido.
-     * Valida estoque, deduz quantidades, cria pedido e itens dentro de uma transação.
-     * Retorna o id do pedido criado.
+     * Finaliza o carrinho criando um pedido separado por fornecedor.
+     * Retorna array de pedido_ids criados.
      */
     public function finalizarPedido($cliente_id, $carrinho) {
         if (empty($carrinho)) {
@@ -21,10 +20,11 @@ class PedidoController {
         }
 
         $estoqueDao = $this->factory->getEstoqueDao();
+        $produtoDao = $this->factory->getProdutoDao();
         $pedidoDao  = $this->factory->getPedidoDao();
         $conn       = $this->factory->getConnection();
 
-        // Pré-validação de estoque (fora da transação para mensagem clara)
+        // Pré-validação de estoque
         foreach ($carrinho as $item) {
             $estoques = $estoqueDao->buscaPorProdutoId($item['produto_id']);
             $disponivel = array_sum(array_map(fn($e) => $e->getQuantidade(), $estoques));
@@ -33,39 +33,53 @@ class PedidoController {
             }
         }
 
+        // Agrupa itens do carrinho por fornecedor_id
+        $grupos = [];
+        foreach ($carrinho as $item) {
+            $produto = $produtoDao->buscaPorId($item['produto_id']);
+            $fid = $produto->getFornecedorId();
+            $grupos[$fid][] = $item;
+        }
+
         $conn->beginTransaction();
         try {
-            $valorTotal = 0;
-            foreach ($carrinho as $item) {
-                $valorTotal += $item['preco'] * $item['quantidade'];
-            }
+            $pedidoIds = [];
 
-            $pedido = new Pedido(null, $cliente_id, null, 'PENDENTE', null, null, $valorTotal);
-            $pedidoId = $pedidoDao->inserePedido($pedido);
+            foreach ($grupos as $fornecedorId => $itens) {
+                // Calcula valor total deste grupo com preços reais dos lotes
+                $valorTotal = 0;
+                foreach ($itens as $item) {
+                    $estoques = $estoqueDao->buscaPorProdutoId($item['produto_id']);
+                    $qtdRestante = $item['quantidade'];
+                    foreach ($estoques as $estoque) {
+                        if ($qtdRestante <= 0) break;
+                        $deduzir = min($qtdRestante, $estoque->getQuantidade());
+                        $valorTotal += $deduzir * $estoque->getPreco();
+                        $qtdRestante -= $deduzir;
+                    }
+                }
 
-            foreach ($carrinho as $item) {
-                // Busca o primeiro estoque com quantidade disponível
-                $estoques = $estoqueDao->buscaPorProdutoId($item['produto_id']);
-                $qtdRestante = $item['quantidade'];
+                $pedido = new Pedido(null, $cliente_id, null, 'AGUARDANDO_PAGAMENTO', null, null, $valorTotal);
+                $pedidoId = $pedidoDao->inserePedido($pedido);
+                $pedidoIds[] = $pedidoId;
 
-                foreach ($estoques as $estoque) {
-                    if ($qtdRestante <= 0) break;
-                    $deduzir = min($qtdRestante, $estoque->getQuantidade());
-
-                    // Insere item do pedido referenciando este lote de estoque
-                    $itemPedido = new ItemPedido(null, $pedidoId, $estoque->getId(), $deduzir, $item['preco']);
-                    $pedidoDao->insereItemPedido($itemPedido);
-
-                    // Deduz estoque
-                    $estoque->setQuantidade($estoque->getQuantidade() - $deduzir);
-                    $estoqueDao->altera($estoque);
-
-                    $qtdRestante -= $deduzir;
+                foreach ($itens as $item) {
+                    $estoques = $estoqueDao->buscaPorProdutoId($item['produto_id']);
+                    $qtdRestante = $item['quantidade'];
+                    foreach ($estoques as $estoque) {
+                        if ($qtdRestante <= 0) break;
+                        $deduzir = min($qtdRestante, $estoque->getQuantidade());
+                        $itemPedido = new ItemPedido(null, $pedidoId, $estoque->getId(), $deduzir, $estoque->getPreco());
+                        $pedidoDao->insereItemPedido($itemPedido);
+                        $estoque->setQuantidade($estoque->getQuantidade() - $deduzir);
+                        $estoqueDao->altera($estoque);
+                        $qtdRestante -= $deduzir;
+                    }
                 }
             }
 
             $conn->commit();
-            return $pedidoId;
+            return $pedidoIds;
         } catch (Exception $e) {
             $conn->rollBack();
             throw $e;
@@ -92,8 +106,28 @@ class PedidoController {
         return $this->factory->getPedidoDao()->contarPorNomeCliente($nome);
     }
 
+    public function listarPorFornecedor($fornecedor_id, $pagina = 1, $porPagina = 10) {
+        return $this->factory->getPedidoDao()->listarPorFornecedor($fornecedor_id, $pagina, $porPagina);
+    }
+
+    public function contarPorFornecedor($fornecedor_id) {
+        return $this->factory->getPedidoDao()->contarPorFornecedor($fornecedor_id);
+    }
+
+    public function buscarPorNomeClienteEFornecedor($nome, $fornecedor_id, $pagina = 1, $porPagina = 10) {
+        return $this->factory->getPedidoDao()->buscaPorNomeClienteEFornecedor($nome, $fornecedor_id, $pagina, $porPagina);
+    }
+
+    public function contarPorNomeClienteEFornecedor($nome, $fornecedor_id) {
+        return $this->factory->getPedidoDao()->contarPorNomeClienteEFornecedor($nome, $fornecedor_id);
+    }
+
     public function buscarItensPedido($pedidoId, $pagina = 1, $porPagina = 10) {
         return $this->factory->getPedidoDao()->buscaItensPorPedidoId($pedidoId, $pagina, $porPagina);
+    }
+
+    public function buscarItensPedidoPorFornecedor($pedidoId, $fornecedorId) {
+        return $this->factory->getPedidoDao()->buscaItensPorPedidoIdEFornecedor($pedidoId, $fornecedorId);
     }
 
     public function contarItensPedido($pedidoId) {

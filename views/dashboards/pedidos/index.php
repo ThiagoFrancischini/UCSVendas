@@ -59,6 +59,7 @@ include_once '../../layouts/header.php';
             <div class="modal-status">
                 <label>Alterar Status:</label>
                 <select id="select-status">
+                    <option value="AGUARDANDO_PAGAMENTO">Aguardando Pagamento</option>
                     <option value="PENDENTE">Pendente</option>
                     <option value="CONFIRMADO">Confirmado</option>
                     <option value="ENVIADO">Enviado</option>

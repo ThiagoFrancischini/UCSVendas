@@ -45,6 +45,19 @@ if (!isset($_SESSION['carrinho'])) {
     respondeJson(['sucesso' => false, 'mensagem' => 'Carrinho vazio.']);
 }
 
+include_once(__DIR__ . '/../../dao/postgres/PostgresDaoFactory.php');
+$factory = new PostgresDaoFactory();
+$estoqueDao = $factory->getEstoqueDao();
+$estoques = $estoqueDao->buscaPorProdutoId($produtoId);
+$estoqueTotal = 0;
+foreach ($estoques as $e) {
+    $estoqueTotal += $e->getQuantidade();
+}
+
+if ($quantidade > $estoqueTotal) {
+    respondeJson(['sucesso' => false, 'mensagem' => 'Quantidade solicitada excede o estoque disponível (' . $estoqueTotal . ' unidade(s)).',  'estoque' => $estoqueTotal]);
+}
+
 $encontrou = false;
 foreach ($_SESSION['carrinho'] as $i => $item) {
     if ($item['produto_id'] === $produtoId) {

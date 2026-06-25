@@ -9,8 +9,12 @@ if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'CLIENTE') {
     exit;
 }
 
-$pedidoId = intval($_GET['pedido_id'] ?? 0);
-if ($pedidoId <= 0) {
+// Aceita ?pedidos=1,2,3 ou ?pedido_id=1 (legado)
+$rawIds = $_GET['pedidos'] ?? ($_GET['pedido_id'] ?? '');
+$pedidoIds = array_filter(array_map('intval', explode(',', $rawIds)));
+$pedidoId  = !empty($pedidoIds) ? min($pedidoIds) : 0;
+
+if (empty($pedidoIds)) {
     header('Location: ' . BASE_URL . '/views/store/index.php');
     exit;
 }
@@ -22,7 +26,11 @@ include_once '../layouts/header.php';
     <div class="confirmado-box">
         <div class="confirmado-icone"><i class="fas fa-check"></i></div>
         <h1>Pedido realizado com sucesso!</h1>
+        <?php if (count($pedidoIds) > 1): ?>
+        <p>Seus pedidos <strong>#<?php echo implode(', #', $pedidoIds); ?></strong> foram registrados.</p>
+        <?php else: ?>
         <p>Seu pedido <strong>#<?php echo $pedidoId; ?></strong> foi registrado.</p>
+        <?php endif; ?>
         <p class="confirmado-sub">Você pode acompanhar o status na área <em>Meus Pedidos</em>.</p>
         <div class="confirmado-acoes">
             <a href="<?php echo BASE_URL; ?>/views/store/meus_pedidos.php" class="btn-pedidos">Ver Meus Pedidos</a>

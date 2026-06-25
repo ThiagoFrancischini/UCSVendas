@@ -26,10 +26,14 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $itens = isset($_SESSION['carrinho']) ? $_SESSION['carrinho'] : [];
 
+// Garante que preco e quantidade são sempre números (não strings do PDO)
 $totalGeral = 0;
-foreach ($itens as $item) {
+foreach ($itens as &$item) {
+    $item['preco']     = (float)$item['preco'];
+    $item['quantidade'] = (int)$item['quantidade'];
     $totalGeral += $item['preco'] * $item['quantidade'];
 }
+unset($item);
 
 respondeJson([
     'sucesso' => true,

@@ -87,9 +87,31 @@ function atualizarQuantidade(produtoId, quantidade) {
         if (data.sucesso) {
             carregarCarrinho();
             atualizarBadgeCarrinho();
+        } else {
+            mostrarErroCarrinho(data.mensagem || 'Erro ao atualizar quantidade.');
+            if (data.estoque !== undefined) {
+                var input = document.querySelector('.carrinho-qtd-input[data-produto-id="' + produtoId + '"]');
+                if (input) input.value = data.estoque;
+            } else {
+                carregarCarrinho();
+            }
         }
     })
     .catch(function() {});
+}
+
+function mostrarErroCarrinho(msg) {
+    var alerta = document.getElementById('carrinho-alerta');
+    if (!alerta) {
+        alerta = document.createElement('div');
+        alerta.id = 'carrinho-alerta';
+        alerta.style.cssText = 'background:#fdf2f2;color:#c0392b;border:1px solid #f5c6c6;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:14px;';
+        var content = document.getElementById('carrinho-content');
+        if (content) content.insertBefore(alerta, content.firstChild);
+    }
+    alerta.textContent = msg;
+    alerta.style.display = 'block';
+    setTimeout(function() { alerta.style.display = 'none'; }, 4000);
 }
 
 function removerItem(produtoId) {

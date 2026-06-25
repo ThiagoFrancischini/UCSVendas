@@ -37,11 +37,8 @@ class PostgresFornecedorDao extends DAO implements FornecedorDao {
         $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindValue(':id', $fornecedor->getId());
-
-        if($stmt->execute()) {
-            return true;
-        }    
-        return false;
+        $stmt->execute();
+        return true;
     }
 
     public function altera($fornecedor) {

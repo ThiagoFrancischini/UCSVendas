@@ -80,8 +80,8 @@ class PostgresEstoqueDao extends DAO implements EstoqueDao {
 
     public function buscaPorProdutoId($produto_id) {
         $estoques = array();
-        $query = "SELECT id, quantidade, preco, preco_custo, lote, produto_id 
-                  FROM " . $this->table_name . " WHERE produto_id = ? ORDER BY id ASC";
+        $query = "SELECT id, quantidade, preco, preco_custo, lote, produto_id
+                  FROM " . $this->table_name . " WHERE produto_id = ? ORDER BY preco DESC, id ASC";
      
         $stmt = $this->conn->prepare($query);
         $stmt->bindValue(1, $produto_id);

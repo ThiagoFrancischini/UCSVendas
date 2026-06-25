@@ -33,9 +33,29 @@ if (!$usuario) {
     exit;
 }
 
+$conn = $factory->getConnection();
+
+// Se for cliente, verifica se tem pedidos vinculados
+$stmtPerfil = $conn->prepare("SELECT perfil FROM usuario WHERE id = ?");
+$stmtPerfil->execute([$id]);
+$perfil = $stmtPerfil->fetchColumn();
+
+if ($perfil === 'CLIENTE') {
+    $stmtCheck = $conn->prepare("
+        SELECT COUNT(*) FROM pedido p
+        INNER JOIN cliente c ON c.id = p.cliente_id
+        WHERE c.usuario_id = ?
+    ");
+    $stmtCheck->execute([$id]);
+    if ((int)$stmtCheck->fetchColumn() > 0) {
+        echo json_encode(['sucesso' => false, 'mensagem' => 'Não é possível excluir: este cliente possui pedidos registrados no sistema.']);
+        exit;
+    }
+}
+
 try {
     $ok = $dao->remove($usuario);
     echo json_encode(['sucesso' => $ok]);
 } catch (Exception $e) {
-    echo json_encode(['sucesso' => false, 'mensagem' => $e->getMessage()]);
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao excluir usuário.']);
 }

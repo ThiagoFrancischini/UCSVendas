@@ -28,25 +28,12 @@ include_once '../layouts/header.php';
     <?php if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'CLIENTE'): ?>
     <section class="checkout-auth" id="checkout-auth">
         <h2>Identificação</h2>
-        <div class="auth-tabs">
-            <button class="auth-tab active" data-tab="login" onclick="mostrarTab('login')">Já tenho conta</button>
-            <button class="auth-tab" data-tab="registro" onclick="mostrarTab('registro')">Sou novo cliente</button>
-        </div>
-
-        <!-- Login -->
-        <div id="tab-login" class="auth-form">
-            <div id="msg-login" class="form-msg"></div>
-            <label>E-mail</label>
-            <input type="email" id="login-email" placeholder="seu@email.com">
-            <label>Senha</label>
-            <input type="password" id="login-senha" placeholder="Senha">
-            <button class="btn-primary" onclick="fazerLogin()">Entrar</button>
-        </div>
-
-        <!-- Criar conta -->
-        <div id="tab-registro" class="auth-form" style="display:none">
-            <p style="color:#555;margin-bottom:20px;line-height:1.6;">Crie sua conta de cliente para poder finalizar pedidos. Após o cadastro você será redirecionado de volta para o checkout.</p>
-            <a href="<?php echo BASE_URL; ?>/views/auth/registro.php?redirect=checkout" class="btn-primary" style="text-decoration:none;display:flex;">
+        <p style="color:#555;margin-bottom:24px;line-height:1.6;">Para finalizar seu pedido, faça login ou crie uma conta de cliente. Seu carrinho será mantido.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <a href="<?php echo BASE_URL; ?>/views/auth/login.php?redirect=checkout" class="btn-primary" style="text-decoration:none;flex:1;min-width:160px;">
+                <i class="fas fa-sign-in-alt"></i> Entrar na minha conta
+            </a>
+            <a href="<?php echo BASE_URL; ?>/views/auth/registro.php?redirect=checkout" class="btn-primary" style="text-decoration:none;flex:1;min-width:160px;background:#2c3e50;">
                 <i class="fas fa-user-plus"></i> Criar minha conta
             </a>
         </div>
@@ -77,11 +64,6 @@ window.LOGADO_COMO_CLIENTE = <?php echo (isset($_SESSION['perfil']) && $_SESSION
 .checkout-tabela th { font-size: 12px; color: #888; text-transform: uppercase; }
 .checkout-total { text-align: right; font-size: 18px; margin-top: 16px; }
 .checkout-total strong { font-size: 26px; color: #1abc9c; margin-left: 10px; }
-.auth-tabs { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 2px solid #ececec; }
-.auth-tab { background: none; border: none; padding: 12px 20px; cursor: pointer; font-size: 15px; color: #888; font-weight: 600; border-bottom: 2px solid transparent; margin-bottom: -2px; }
-.auth-tab.active { color: #1abc9c; border-bottom-color: #1abc9c; }
-.auth-form label { display: block; font-size: 13px; font-weight: 600; color: #555; margin: 12px 0 4px; }
-.auth-form input { width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box; }
 .form-msg { padding: 10px 14px; border-radius: 8px; margin-bottom: 12px; display: none; }
 .form-msg.erro { background: #fdf2f2; color: #c0392b; display: block; }
 .form-msg.ok { background: #f0fdf4; color: #16a085; display: block; }

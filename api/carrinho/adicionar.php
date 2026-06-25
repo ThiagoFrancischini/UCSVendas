@@ -36,7 +36,6 @@ if (!$input || !isset($input['produto_id']) || !isset($input['quantidade'])) {
 
 $produtoId = intval($input['produto_id']);
 $quantidade = intval($input['quantidade']);
-$preco = floatval($input['preco'] ?? 0);
 $nome = $input['nome'] ?? '';
 $foto = $input['foto'] ?? '';
 
@@ -47,10 +46,13 @@ if ($quantidade < 1) {
 include_once(__DIR__ . '/../../dao/postgres/PostgresDaoFactory.php');
 $factory = new PostgresDaoFactory();
 $estoqueDao = $factory->getEstoqueDao();
-$estoques = $estoqueDao->buscaPorProdutoId($produtoId);
+$estoques = $estoqueDao->buscaPorProdutoId($produtoId); // ordenado por preco DESC
 $estoqueTotal = 0;
+$preco = 0.0;
 foreach ($estoques as $e) {
-    $estoqueTotal += $e->getQuantidade();
+    $estoqueTotal += (int)$e->getQuantidade();
+    $ePreco = (float)$e->getPreco();
+    if ($ePreco > $preco) $preco = $ePreco;
 }
 
 $qtdNoCarrinho = 0;

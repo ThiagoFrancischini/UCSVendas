@@ -23,27 +23,31 @@ if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'FORNECEDOR') {
 
 include_once(__DIR__ . '/../controllers/PedidoController.php');
 
-$controller = new PedidoController();
-$pagina    = max(1, intval($_GET['pagina'] ?? 1));
-$porPagina = 10;
-$busca     = trim($_GET['busca'] ?? '');
-$numero    = intval($_GET['numero'] ?? 0);
+$controller   = new PedidoController();
+$pagina       = max(1, intval($_GET['pagina'] ?? 1));
+$porPagina    = 10;
+$busca        = trim($_GET['busca'] ?? '');
+$numero       = intval($_GET['numero'] ?? 0);
+$fornecedorId = intval($_SESSION['fornecedor_id'] ?? 0);
 
 if ($numero > 0) {
     $pedido = $controller->buscarPedidoPorId($numero);
+    // Verifica se o pedido tem itens deste fornecedor
     if ($pedido) {
-        respondeJson(['sucesso' => true, 'pedidos' => [pedidoParaArray($pedido)], 'total' => 1, 'paginas' => 1]);
-    } else {
-        respondeJson(['sucesso' => true, 'pedidos' => [], 'total' => 0, 'paginas' => 0]);
+        $itens = $controller->buscarItensPedidoPorFornecedor($pedido->getId(), $fornecedorId);
+        if (!empty($itens)) {
+            respondeJson(['sucesso' => true, 'pedidos' => [pedidoParaArray($pedido)], 'total' => 1, 'paginas' => 1]);
+        }
     }
+    respondeJson(['sucesso' => true, 'pedidos' => [], 'total' => 0, 'paginas' => 0]);
 }
 
 if ($busca !== '') {
-    $pedidos = $controller->buscarPorNomeCliente($busca, $pagina, $porPagina);
-    $total   = $controller->contarPorNomeCliente($busca);
+    $pedidos = $controller->buscarPorNomeClienteEFornecedor($busca, $fornecedorId, $pagina, $porPagina);
+    $total   = $controller->contarPorNomeClienteEFornecedor($busca, $fornecedorId);
 } else {
-    $pedidos = $controller->listarTodos($pagina, $porPagina);
-    $total   = $controller->contarTodos();
+    $pedidos = $controller->listarPorFornecedor($fornecedorId, $pagina, $porPagina);
+    $total   = $controller->contarPorFornecedor($fornecedorId);
 }
 
 $paginas = ceil($total / $porPagina);

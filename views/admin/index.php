@@ -12,7 +12,7 @@ if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'ADMIN') {
 ?>
 <?php include_once '../layouts/header.php'; ?>
 
-<main>
+<main class="dash-main">
     <h1>Painel do Administrador</h1>
 
     <div class="dashboard-cards">

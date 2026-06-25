@@ -103,6 +103,110 @@ class PostgresPedidoDao extends DAO implements PedidoDao {
         return (int)$stmt->fetchColumn();
     }
 
+    public function listarPorFornecedor($fornecedor_id, $pagina = 1, $porPagina = 10) {
+        $offset = ($pagina - 1) * $porPagina;
+        $query = "SELECT DISTINCT p.*, c.nome AS cliente_nome
+                  FROM pedido p
+                  JOIN cliente c ON c.id = p.cliente_id
+                  JOIN item_pedido ip ON ip.pedido_id = p.id
+                  JOIN estoque e ON e.id = ip.estoque_id
+                  JOIN produto pr ON pr.id = e.produto_id
+                  WHERE pr.fornecedor_id = :fornecedor_id
+                  ORDER BY p.id DESC
+                  LIMIT :limit OFFSET :offset";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':fornecedor_id', $fornecedor_id, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $porPagina, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $pedidos = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $pedidos[] = $this->rowToPedido($row);
+        }
+        return $pedidos;
+    }
+
+    public function contarPorFornecedor($fornecedor_id) {
+        $query = "SELECT COUNT(DISTINCT p.id) FROM pedido p
+                  JOIN item_pedido ip ON ip.pedido_id = p.id
+                  JOIN estoque e ON e.id = ip.estoque_id
+                  JOIN produto pr ON pr.id = e.produto_id
+                  WHERE pr.fornecedor_id = :fornecedor_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':fornecedor_id', $fornecedor_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function buscaPorNomeClienteEFornecedor($nome, $fornecedor_id, $pagina = 1, $porPagina = 10) {
+        $offset = ($pagina - 1) * $porPagina;
+        $query = "SELECT DISTINCT p.*, c.nome AS cliente_nome
+                  FROM pedido p
+                  JOIN cliente c ON c.id = p.cliente_id
+                  JOIN item_pedido ip ON ip.pedido_id = p.id
+                  JOIN estoque e ON e.id = ip.estoque_id
+                  JOIN produto pr ON pr.id = e.produto_id
+                  WHERE pr.fornecedor_id = :fornecedor_id AND LOWER(c.nome) LIKE LOWER(:nome)
+                  ORDER BY p.id DESC
+                  LIMIT :limit OFFSET :offset";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':fornecedor_id', $fornecedor_id, PDO::PARAM_INT);
+        $stmt->bindValue(':nome', '%' . $nome . '%');
+        $stmt->bindValue(':limit', $porPagina, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $pedidos = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $pedidos[] = $this->rowToPedido($row);
+        }
+        return $pedidos;
+    }
+
+    public function contarPorNomeClienteEFornecedor($nome, $fornecedor_id) {
+        $query = "SELECT COUNT(DISTINCT p.id) FROM pedido p
+                  JOIN cliente c ON c.id = p.cliente_id
+                  JOIN item_pedido ip ON ip.pedido_id = p.id
+                  JOIN estoque e ON e.id = ip.estoque_id
+                  JOIN produto pr ON pr.id = e.produto_id
+                  WHERE pr.fornecedor_id = :fornecedor_id AND LOWER(c.nome) LIKE LOWER(:nome)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':fornecedor_id', $fornecedor_id, PDO::PARAM_INT);
+        $stmt->bindValue(':nome', '%' . $nome . '%');
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function buscaItensPorPedidoIdEFornecedor($pedido_id, $fornecedor_id) {
+        $query = "SELECT ip.*, e.produto_id, p.nome AS produto_nome, p.descricao AS produto_descricao, p.foto AS produto_foto, f.nome AS fornecedor_nome
+                  FROM item_pedido ip
+                  JOIN estoque e ON e.id = ip.estoque_id
+                  JOIN produto p ON p.id = e.produto_id
+                  JOIN fornecedor f ON f.id = p.fornecedor_id
+                  WHERE ip.pedido_id = :pedido_id AND p.fornecedor_id = :fornecedor_id
+                  ORDER BY ip.id ASC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':pedido_id', $pedido_id, PDO::PARAM_INT);
+        $stmt->bindValue(':fornecedor_id', $fornecedor_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $itens = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $itens[] = [
+                'id'                => $row['id'],
+                'pedido_id'         => $row['pedido_id'],
+                'estoque_id'        => $row['estoque_id'],
+                'produto_id'        => $row['produto_id'],
+                'quantidade'        => $row['quantidade'],
+                'valor_unitario'    => $row['valor_unitario'],
+                'valor_total_item'  => $row['quantidade'] * $row['valor_unitario'],
+                'produto_nome'      => $row['produto_nome'],
+                'produto_descricao' => $row['produto_descricao'],
+                'foto'              => $row['produto_foto'] ?: null,
+                'fornecedor_nome'   => $row['fornecedor_nome'],
+            ];
+        }
+        return $itens;
+    }
+
     public function buscaItensPorPedidoId($pedido_id, $pagina = 1, $porPagina = 10) {
         $offset = ($pagina - 1) * $porPagina;
         $query = "SELECT ip.*, e.produto_id, p.nome AS produto_nome, p.descricao AS produto_descricao, p.foto AS produto_foto, f.nome AS fornecedor_nome
